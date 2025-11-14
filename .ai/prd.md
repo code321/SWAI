@@ -53,7 +53,7 @@ Uczniowie uczą się obcych słówek na pamięć, bez kontekstu, co utrudnia zap
 - Ochrona sesji użytkownika
 
 ### 3.2 Zarządzanie zestawami słówek
-- Tworzenie nowego zestawu (maksymalnie 20 słówek)
+- Tworzenie nowego zestawu (maksymalnie 5 słówek)
 - Wprowadzanie słówek angielskich i ich polskich tłumaczeń
 - Wybór poziomu CEFR dla zestawu (A1, A2, B1, B2, C1, C2)
 - Edycja istniejących zestawów
@@ -102,7 +102,7 @@ Uczniowie uczą się obcych słówek na pamięć, bez kontekstu, co utrudnia zap
 - **Wielojęzyczność**: Tylko polski → angielski w MVP
 
 ### Ograniczenia techniczne
-- Maksymalnie 20 słówek na zestaw
+- Maksymalnie 5 słówek na zestaw
 - Limit 10 generacji dziennie na użytkownika
 - Brak obsługi plików multimedialnych
 - Brak integracji z zewnętrznymi systemami
@@ -153,7 +153,7 @@ Uczniowie uczą się obcych słówek na pamięć, bez kontekstu, co utrudnia zap
 
 **Kryteria akceptacji**:
 - Użytkownik może wprowadzić nazwę zestawu
-- Użytkownik może dodać do 20 słówek (angielskie + polskie tłumaczenia)
+- Użytkownik może dodać do 5 słówek (angielskie + polskie tłumaczenia)
 - Użytkownik może wybrać poziom CEFR (A1-C2)
 - System waliduje, że wszystkie pola są wypełnione
 - Po zapisaniu zestawu użytkownik zostaje przekierowany do listy zestawów
