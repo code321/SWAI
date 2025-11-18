@@ -101,7 +101,7 @@ Dev tooling: ESLint 9 (with Astro/React/TS rules), Prettier + `prettier-plugin-a
 
 - In scope (MVP):
   - Auth: register, login, password reset, logout, session protection
-  - Vocabulary sets: create (max 20 words), edit, delete, list; CEFR level (A1–C2)
+  - Vocabulary sets: create (max 5 words), edit, delete, list; CEFR level (A1–C2)
   - Sentence generation: 2–3 Polish sentences per word; ≤15 words per sentence; CEFR-tuned; daily limit of 10 generations per user
   - Practice: translate to English; case/punctuation-insensitive checks; required articles (a/an/the); colored diff/error highlights; concise explanations
   - Dashboard and navigation: quick actions, searchable/filterable list, daily limit counter
@@ -117,7 +117,7 @@ Dev tooling: ESLint 9 (with Astro/React/TS rules), Prettier + `prettier-plugin-a
   - Multi-language pairs (MVP supports Polish → English only)
 
 - Constraints:
-  - Max 20 words per set
+  - Max 5 words per set
   - 10 generations per user per day
   - No multimedia handling and no external integrations in MVP
 
