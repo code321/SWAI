@@ -63,8 +63,8 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ### 2.2 Sets
 
 #### GET `/api/sets`
-**Description**: Lists the caller’s sets with search, CEFR filtering, pagination, and creation sort (najnowsze first).  
-**Query Parameters**: `search` (string, optional, prefix match using `idx_sets_name_prefix`), `level` (enum A1-C2, optional), `cursor`, `limit`, `sort` (`created_at_desc` default, `name_asc`).  
+**Description**: Lists the caller's sets with search, CEFR filtering, pagination, and creation sort (najnowsze first).  
+**Query Parameters**: `search` (string, optional, prefix match using `idx_sets_name_prefix`), `level` (CEFRLevel enum A1-C2, optional), `cursor`, `limit`, `sort` (`created_at_desc` default, `name_asc`).  
 **Request JSON**: _none_  
 **Response JSON**:
 ```json
@@ -109,7 +109,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 }
 ```
 **Success**: `201 Created` (`SET_CREATED`).  
-**Errors**: `400` missing fields, `401`, `409` duplicate name, `422` >5 words or invalid CEFR, `500`.
+**Errors**: `400` missing fields, `401`, `409` duplicate name, `422` >5 words or invalid CEFRLevel, `500`.
 
 #### GET `/api/sets/{setId}`
 **Description**: Returns a single set with embedded words (ordered by `position`).  
@@ -145,7 +145,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ```
 **Response JSON**: same as GET single set.  
 **Success**: `200 OK` (`SET_UPDATED`).  
-**Errors**: `400` invalid payload, `401`, `404`, `409` duplicate name, `422` validations (max words, CEFR invalid, duplicate English), `500`.
+**Errors**: `400` invalid payload, `401`, `404`, `409` duplicate name, `422` validations (max words, CEFRLevel invalid, duplicate English), `500`.
 
 #### DELETE `/api/sets/{setId}`
 **Description**: Permanently deletes a set and cascades to words, generations, sessions.  
@@ -293,7 +293,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 {
   "data": [
     {
-      "id": "uuid",
+      "sentence_id": "uuid",
       "word_id": "uuid-word",
       "pl_text": "Na lotnisku było tłoczno.",
       "target_en": "It was crowded at the airport."
@@ -339,12 +339,19 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
   "generation_id": "uuid",
   "started_at": "...",
   "finished_at": null,
-  "progress": { "attempted": 3, "correct": 2, "remaining": 9 },
+  "progress": { 
+    "attempted": 3, 
+    "correct": 2, 
+    "remaining": 9 
+  },
   "sentences": [
     {
       "sentence_id": "uuid-sentence",
       "pl_text": "...",
-      "latest_attempt": { "attempt_no": 2, "is_correct": false }
+      "latest_attempt": { 
+        "attempt_no": 2, 
+        "is_correct": false 
+      }
     }
   ]
 }
@@ -375,13 +382,15 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ```json
 {
   "attempt_id": "uuid-attempt",
+  "attempt_no": 1,
   "is_correct": true,
+  "answer_raw": "It was crowded at the airport.",
+  "answer_norm": "it was crowded at the airport",
+  "checked_at": "2025-11-14T10:25:00Z",
   "feedback": {
     "highlight": [],
     "explanation": "Correct article usage."
-  },
-  "answer_norm": "it was crowded at the airport",
-  "checked_at": "2025-11-14T10:25:00Z"
+  }
 }
 ```
 **Success**: `200 OK` (`ATTEMPT_RECORDED`).  
@@ -449,10 +458,19 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ```json
 {
   "sets_total": 3,
-  "active_session": { "session_id": "uuid", "started_at": "..." },
+  "active_session": { 
+    "session_id": "uuid",
+    "set_id": "uuid",
+    "started_at": "..." 
+  },
   "remaining_generations": 4,
   "events": [
-    { "event_type": "attempt_submitted", "occurred_at": "..." }
+    { 
+      "id": "uuid",
+      "event_type": "attempt_submitted",
+      "entity_id": "uuid",
+      "occurred_at": "..." 
+    }
   ]
 }
 ```
@@ -492,7 +510,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 
 ### 4.2 Sets & Words
 - Enforce max five words per set (PRD + DB constraint); acknowledge that increasing this requires schema and UX updates.
-- Validate CEFR level against enum `A1`–`C2`.
+- Validate CEFRLevel against enum `A1`–`C2`.
 - `words.position` must stay within 1–20, unique per set; reorder endpoint runs within transaction to avoid gaps.
 - `words.en` normalized via `normalize_en` to enforce uniqueness; API rejects duplicates before hitting DB constraint.
 - Updating or deleting words while a generation is running returns `409`.

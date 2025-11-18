@@ -11,7 +11,7 @@ import type {
  */
 export type ISODateString = Tables<"exercise_sessions">["started_at"]
 export type UUID = Tables<"sets">["id"]
-export type CEFLevel = Enums<"cefr_level">
+export type CEFRLevel = Enums<"cefr_level">
 
 export type PaginationMeta = {
   next_cursor?: string | null
@@ -62,7 +62,7 @@ export type AuthLogoutResponseDTO = MessageResponse<"LOGGED_OUT">
 
 export type SetsListQuery = {
   search?: string
-  level?: CEFLevel
+  level?: CEFRLevel
   cursor?: string
   limit?: number
   sort?: "created_at_desc" | "name_asc"
@@ -256,10 +256,13 @@ export type AttemptFeedbackDTO = {
   explanation?: string
 }
 
-export type AttemptDTO = Pick<
-  Tables<"attempts">,
-  "id" | "attempt_no" | "is_correct" | "answer_raw" | "answer_norm" | "checked_at"
-> & {
+export type AttemptDTO = {
+  attempt_id: Tables<"attempts">["id"]
+  attempt_no: Tables<"attempts">["attempt_no"]
+  is_correct: Tables<"attempts">["is_correct"]
+  answer_raw: Tables<"attempts">["answer_raw"]
+  answer_norm: Tables<"attempts">["answer_norm"]
+  checked_at: Tables<"attempts">["checked_at"]
   feedback: AttemptFeedbackDTO
 }
 
@@ -304,10 +307,11 @@ export type DashboardEventDTO = Pick<
   "id" | "event_type" | "entity_id" | "occurred_at"
 >
 
-export type DashboardActiveSessionDTO = Pick<
-  Tables<"exercise_sessions">,
-  "id" | "set_id" | "started_at"
->
+export type DashboardActiveSessionDTO = {
+  session_id: Tables<"exercise_sessions">["id"]
+  set_id: Tables<"exercise_sessions">["set_id"]
+  started_at: Tables<"exercise_sessions">["started_at"]
+}
 
 export type DashboardDTO = {
   sets_total: number
