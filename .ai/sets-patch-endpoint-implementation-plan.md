@@ -28,7 +28,7 @@ Endpoint aktualizuje metadane zestawu (`name`, `level`) oraz opcjonalnie zastęp
   | `id` | `UUID` | Nie | Jeśli podane → update istniejącego słowa. Jeśli brak → insert nowego. |
   | `pl` | `string` | Tak | Polskie słowo/wyrażenie. |
   | `en` | `string` | Tak | Angielskie tłumaczenie. |
-  | `position` | `number` | Nie | Pozycja (1-20). Jeśli brak, auto-przypisywana. |
+  | `position` | `number` | Nie | Pozycja (1-5). Jeśli brak, auto-przypisywana. |
 
 **Przykład body** (update nazwy i słówek):
 ```json

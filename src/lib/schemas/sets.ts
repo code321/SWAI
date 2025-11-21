@@ -48,7 +48,7 @@ export type ListSetsQuerySchema = z.infer<typeof listSetsQuerySchema>;
  * Validates:
  * - pl: Polish word/phrase (required, 1-200 chars)
  * - en: English translation (required, 1-200 chars, trimmed, not only whitespace)
- * - position: Optional position (1-20)
+ * - position: Optional position (1-5)
  */
 export const wordCreateInputSchema = z.object({
   pl: z.string().min(1, 'Polish word is required').max(200, 'Polish word too long'),
@@ -57,7 +57,7 @@ export const wordCreateInputSchema = z.object({
     .max(200, 'English word too long')
     .trim()
     .refine(val => val.length > 0, 'English word cannot be only whitespace'),
-  position: z.number().int().min(1).max(20).optional(),
+  position: z.number().int().min(1).max(5).optional(),
 });
 
 /**
@@ -108,7 +108,7 @@ export type SetIdParamSchema = z.infer<typeof setIdParamSchema>;
  * - id: Optional UUID (if provided, updates existing word; if not, creates new)
  * - pl: Polish word/phrase (required, 1-200 chars)
  * - en: English translation (required, 1-200 chars, trimmed)
- * - position: Optional position (1-20)
+ * - position: Optional position (1-5)
  */
 export const wordUpsertInputSchema = z.object({
   id: uuidSchema.optional(),
@@ -118,7 +118,7 @@ export const wordUpsertInputSchema = z.object({
     .max(200, 'English word too long')
     .trim()
     .refine(val => val.length > 0, 'English word cannot be only whitespace'),
-  position: z.number().int().min(1).max(20).optional(),
+  position: z.number().int().min(1).max(5).optional(),
 });
 
 /**

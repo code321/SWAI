@@ -3,7 +3,7 @@
 ## 1. Zasoby
 - **Profile** (`profiles`): stores Supabase user metadata (timezone, created_at). RLS ensures each row belongs to its owner and cascades delete to dependents.
 - **Vocabulary Set** (`sets`): per-user grouping of up to five words, with CEFR level, timestamps, `words_count` tracking, unique `(user_id, name)` and prefix indexes for searching.
-- **Word** (`words`): bilingual entries tied to a set and position (1-20) with normalized English text for duplicate prevention and ordering indexes.
+- **Word** (`words`): bilingual entries tied to a set and position (1-5) with normalized English text for duplicate prevention and ordering indexes.
 - **Generation Run** (`generation_runs` + `generation_log`): captures every AI generation request (model, temperature, tokens, prompt version, idempotency key, words snapshot) and separately logs events for auditing.
 - **Sentence** (`sentences`): generated Polish sentences mapped to a word and generation, with normalized targets and `pl_word_count` guard (≤15 words).
 - **Exercise Session** (`exercise_sessions`): represents a user’s practice session for a given set and generation; holds start/end timestamps and is the parent for attempts and ratings.
@@ -511,7 +511,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ### 4.2 Sets & Words
 - Enforce max five words per set (PRD + DB constraint); acknowledge that increasing this requires schema and UX updates.
 - Validate CEFRLevel against enum `A1`–`C2`.
-- `words.position` must stay within 1–20, unique per set; reorder endpoint runs within transaction to avoid gaps.
+- `words.position` must stay within 1–5, unique per set; reorder endpoint runs within transaction to avoid gaps.
 - `words.en` normalized via `normalize_en` to enforce uniqueness; API rejects duplicates before hitting DB constraint.
 - Updating or deleting words while a generation is running returns `409`.
 

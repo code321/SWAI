@@ -23,7 +23,7 @@ Endpoint tworzy nowy zestaw słówek z maksymalnie 5 początkowymi słowami. Wym
     |------|-----|----------|------|
     | `pl` | `string` | Tak | Polskie słowo/wyrażenie. |
     | `en` | `string` | Tak | Angielskie tłumaczenie. |
-    | `position` | `number` | Nie | Pozycja w zestawie (1-20). Jeśli brak, auto-przypisywana. |
+    | `position` | `number` | Nie | Pozycja w zestawie (1-5). Jeśli brak, auto-przypisywana. |
 
 **Przykład body**:
 ```json

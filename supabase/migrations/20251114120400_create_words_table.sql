@@ -19,8 +19,8 @@ create table words (
   -- Normalized English for case-insensitive comparison
   en_norm text generated always as (normalize_en(en)) stored,
   
-  -- Position within the set (1-20)
-  position smallint not null check (position between 1 and 20),
+  -- Position within the set (1-5)
+  position smallint not null check (position between 1 and ),
   
   -- Audit timestamp
   created_at timestamptz not null default now(),
@@ -30,13 +30,13 @@ create table words (
   unique(user_id, set_id, position)
 );
 
-comment on table words is 'Individual vocabulary words within sets (max 20 per set)';
+comment on table words is 'Individual vocabulary words within sets (max 5 per set)';
 comment on column words.user_id is 'Owner of this word (for RLS)';
 comment on column words.set_id is 'Parent vocabulary set';
 comment on column words.pl is 'Polish translation';
 comment on column words.en is 'English word or phrase';
 comment on column words.en_norm is 'Normalized English for case-insensitive duplicate detection';
-comment on column words.position is 'Position in set (1-20), used for ordering';
+comment on column words.position is 'Position in set (1-5), used for ordering';
 comment on column words.created_at is 'Timestamp when the word was added';
 
 -- Enable Row Level Security

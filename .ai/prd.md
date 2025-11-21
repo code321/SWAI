@@ -207,7 +207,7 @@ Uczniowie uczą się obcych słówek na pamięć, bez kontekstu, co utrudnia zap
 
 **Kryteria akceptacji**:
 - Użytkownik może otworzyć zestaw do edycji
-- Użytkownik może dodać nowe słówka (do limitu 20)
+- Użytkownik może dodać nowe słówka (do limitu 5)
 - Użytkownik może usunąć istniejące słówka
 - Użytkownik może zmienić polskie tłumaczenia
 - Użytkownik może zmienić poziom CEFR
