@@ -2,7 +2,7 @@
 
 ## 1. Przegląd punktu końcowego
 
-Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu użytkownika. Dla każdego słowa można opcjonalnie określić docelową pozycję (1-5). Jeśli pozycja nie zostanie podana, jest przydzielana sekwencyjnie. Po pomyślnym utworzeniu zwracana jest lista dodanych słów oraz zaktualizowana liczba słów w zestawie.
+Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu użytkownika. Po pomyślnym utworzeniu zwracana jest lista dodanych słów oraz zaktualizowana liczba słów w zestawie.
 
 ## 2. Szczegóły żądania
 

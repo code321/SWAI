@@ -52,14 +52,12 @@ export async function createSet(
   const setId = setData.id;
 
   try {
-    // Step 2: Prepare words for insertion
-    // Auto-assign positions if not provided
-    const wordsToInsert = words.map((word, index) => ({
+    // Step 2: Prepare words for insertion (position removed, order defined by created_at)
+    const wordsToInsert = words.map((word) => ({
       set_id: setId,
       user_id: userId,
       pl: word.pl.trim(),
       en: word.en.trim(),
-      position: word.position ?? index + 1,
     }));
 
     // Step 3: Insert words

@@ -75,7 +75,7 @@ export type SetSummaryDTO = Pick<
 
 export type SetsListResponseDTO = PaginatedResponse<SetSummaryDTO>
 
-export type WordDTO = Pick<Tables<"words">, "id" | "pl" | "en" | "position">
+export type WordDTO = Pick<Tables<"words">, "id" | "pl" | "en">
 
 type GenerationRunMetaDTO = Pick<Tables<"generation_runs">, "id" | "occurred_at">
 
@@ -87,8 +87,7 @@ export type SetDetailDTO = Pick<
   latest_generation?: GenerationRunMetaDTO | null
 }
 
-type WordCreateInput = Pick<TablesInsert<"words">, "pl" | "en"> &
-  Partial<Pick<TablesInsert<"words">, "position">>
+type WordCreateInput = Pick<TablesInsert<"words">, "pl" | "en">
 
 type WordUpsertInput = { id?: Tables<"words">["id"] } & WordCreateInput
 
@@ -119,7 +118,7 @@ export type WordsAddResponseDTO = {
 }
 
 export type WordUpdateCommand = Partial<
-  Pick<TablesUpdate<"words">, "pl" | "en" | "position">
+  Pick<TablesUpdate<"words">, "pl" | "en">
 >
 
 export type WordUpdateResponseDTO = WordDTO
@@ -128,14 +127,7 @@ export type WordDeleteResponseDTO = MessageResponse<"WORD_DELETED"> & {
   words_count: Tables<"sets">["words_count"]
 }
 
-export type WordsReorderCommand = {
-  order: Array<{
-    word_id: Tables<"words">["id"]
-    position: Tables<"words">["position"]
-  }>
-}
-
-export type WordsReorderResponseDTO = MessageResponse<"WORDS_REORDERED">
+// Position removed; reorder feature obsolete
 
 // ---------------------------------------------------------------------------
 // Generation runs & sentences

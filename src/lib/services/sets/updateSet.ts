@@ -114,7 +114,6 @@ export async function updateSet(
             .update({
               pl: word.pl.trim(),
               en: word.en.trim(),
-              position: word.position,
             })
             .eq('id', word.id!)
             .eq('set_id', setId)
@@ -134,18 +133,13 @@ export async function updateSet(
         }
       }
 
-      // Step 4d: Insert new words (auto-assign positions if not provided)
+      // Step 4d: Insert new words
       if (wordsToInsert.length > 0) {
-        const startPosition = wordsToUpdate.length > 0
-          ? Math.max(...wordsToUpdate.map(w => w.position || 0)) + 1
-          : 1;
-
-        const newWords = wordsToInsert.map((word, index) => ({
+        const newWords = wordsToInsert.map((word) => ({
           set_id: setId,
           user_id: userId,
           pl: word.pl.trim(),
           en: word.en.trim(),
-          position: word.position ?? startPosition + index,
         }));
 
         const { error: insertError } = await supabase
