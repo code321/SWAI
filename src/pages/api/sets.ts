@@ -140,6 +140,7 @@ export const POST: APIRoute = async (context) => {
   try {
     // Get Supabase client from middleware
     const supabase = context.locals.supabase;
+   
     if (!supabase) {
       return new Response(
         JSON.stringify({
@@ -157,7 +158,7 @@ export const POST: APIRoute = async (context) => {
 
     // TODO: Get user ID from authentication middleware when implemented
     const userId = '14cf5f38-c354-400a-be38-069e4cd41855'; // Placeholder
-
+console.log("userId", userId);
     // Parse request body
     let body;
     try {
