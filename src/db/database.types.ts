@@ -403,7 +403,6 @@ export type Database = {
           en_norm: string | null
           id: string
           pl: string
-          position: number
           set_id: string
           user_id: string
         }
@@ -413,7 +412,6 @@ export type Database = {
           en_norm?: string | null
           id?: string
           pl: string
-          position: number
           set_id: string
           user_id?: string
         }
@@ -423,7 +421,6 @@ export type Database = {
           en_norm?: string | null
           id?: string
           pl?: string
-          position?: number
           set_id?: string
           user_id?: string
         }

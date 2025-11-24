@@ -33,12 +33,12 @@ export async function getSetById(
     return null;
   }
 
-  // Step 2: Fetch all words for this set, ordered by position
+  // Step 2: Fetch all words for this set – order by creation time to keep stable order
   const { data: wordsData, error: wordsError } = await supabase
     .from('words')
-    .select('id, pl, en, position')
+    .select('id, pl, en')
     .eq('set_id', setId)
-    .order('position', { ascending: true });
+    .order('created_at', { ascending: true });
 
   if (wordsError) {
     console.error('Error fetching words:', wordsError);
