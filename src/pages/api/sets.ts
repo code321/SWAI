@@ -127,7 +127,7 @@ export const GET: APIRoute = async (context) => {
  * - name: Set name (1-100 chars, unique per user)
  * - level: CEFR level (A1-C2)
  * - timezone: User timezone (IANA format)
- * - words: Array of 1-5 words with pl, en, and optional position
+ * - words: Array of 1-5 words with pl, en
  * 
  * Returns:
  * - 201: Successfully created set with SetCreateResponseDTO

@@ -7,7 +7,6 @@ import type { SetCreateCommand, SetSummaryDTO } from '../../../types';
  * Implements:
  * - Set creation with name uniqueness enforcement (per user)
  * - Initial words insertion (1-5 words)
- * - Auto-assignment of positions if not provided
  * - English word normalization (en_norm) for duplicate detection
  * - Transaction handling for atomicity
  * - Optional event logging

@@ -21,11 +21,6 @@ create index idx_sets_user_level on sets (user_id, level);
 
 comment on index idx_sets_user_level is 'Optimizes queries filtering sets by CEFR level for a user';
 
--- Index for retrieving words in order within a set
--- Used for displaying words in the correct sequence
-create index idx_words_position on words (user_id, set_id, position);
-
-comment on index idx_words_position is 'Optimizes queries fetching words in order for a specific set';
 
 -- Index for retrieving recent generation runs
 -- Used for "my generation history" views

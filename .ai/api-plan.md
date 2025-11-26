@@ -3,7 +3,7 @@
 ## 1. Zasoby
 - **Profile** (`profiles`): stores Supabase user metadata (timezone, created_at). RLS ensures each row belongs to its owner and cascades delete to dependents.
 - **Vocabulary Set** (`sets`): per-user grouping of up to five words, with CEFR level, timestamps, `words_count` tracking, unique `(user_id, name)` and prefix indexes for searching.
-- **Word** (`words`): bilingual entries tied to a set and position (1-5) with normalized English text for duplicate prevention and ordering indexes.
+- **Word** (`words`): bilingual entries tied to a set, with normalized English text for duplicate prevention.
 - **Generation Run** (`generation_runs` + `generation_log`): captures every AI generation request (model, temperature, tokens, prompt version, idempotency key, words snapshot) and separately logs events for auditing.
 - **Sentence** (`sentences`): generated Polish sentences mapped to a word and generation, with normalized targets and `pl_word_count` guard (≤15 words).
 - **Exercise Session** (`exercise_sessions`): represents a user’s practice session for a given set and generation; holds start/end timestamps and is the parent for attempts and ratings.
@@ -112,7 +112,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 **Errors**: `400` missing fields, `401`, `409` duplicate name, `422` >5 words or invalid CEFRLevel, `500`.
 
 #### GET `/api/sets/{setId}`
-**Description**: Returns a single set with embedded words (ordered by `position`).  
+**Description**: Returns a single set with embedded words.  
 **Request JSON**: _none_  
 **Response JSON**:
 ```json
@@ -122,7 +122,7 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
   "level": "A2",
   "words_count": 2,
   "words": [
-    { "id": "uuid", "pl": "jabłko", "en": "apple", "position": 1 }
+    { "id": "uuid", "pl": "jabłko", "en": "apple" }
   ],
   "latest_generation": { "id": "uuid", "occurred_at": "..." }
 }
@@ -157,13 +157,13 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ### 2.3 Words (nested under a set)
 
 #### POST `/api/sets/{setId}/words`
-**Description**: Adds one or multiple words to a set, auto-assigning `position` sequentially.  
+**Description**: Adds one or multiple words to a set.  
 **Request JSON**:
 ```json
 {
   "words": [
     { "pl": "samolot", "en": "plane" },
-    { "pl": "lotnisko", "en": "airport", "position": 3 }
+    { "pl": "lotnisko", "en": "airport" }
   ]
 }
 ```
@@ -171,41 +171,29 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ```json
 {
   "added": [
-    { "id": "uuid", "pl": "samolot", "en": "plane", "position": 2 }
+    { "id": "uuid", "pl": "samolot", "en": "plane" }
   ],
   "words_count": 4
 }
 ```
 **Success**: `201 Created` (`WORDS_ADDED`).  
-**Errors**: `401`, `404` set missing, `409` duplicate normalized English or position, `422` exceeding five-word limit, invalid position range, `500`.
+**Errors**: `401`, `404` set missing, `409` duplicate normalized English, `422` exceeding five-word limit, `500`.
 
 #### PATCH `/api/sets/{setId}/words/{wordId}`
-**Description**: Updates translations or `position`.  
-**Request JSON**: `{ "pl": "samolot pasażerski", "en": "airplane", "position": 1 }`  
+**Description**: Updates translations of an existing word.  
+**Request JSON**: `{ "pl": "samolot pasażerski", "en": "airplane" }`  
 **Response JSON**: updated word object.  
 **Success**: `200 OK` (`WORD_UPDATED`).  
-**Errors**: `401`, `404`, `409` duplicate english/position, `422` invalid position, `500`.
+**Errors**: `401`, `404`, `409` duplicate english, `500`.
 
 #### DELETE `/api/sets/{setId}/words/{wordId}`
-**Description**: Removes a word and compacts positions + `words_count`.  
+**Description**: Removes a word and updates `words_count`.  
 **Response JSON**: `{ "message": "WORD_DELETED", "words_count": 3 }`  
 **Success**: `200 OK`.  
 **Errors**: `401`, `404`, `409` cannot delete during active generation, `500`.
 
 #### PATCH `/api/sets/{setId}/words/reorder`
-**Description**: Bulk reorder positions to maintain spacing before new generation.  
-**Request JSON**:
-```json
-{
-  "order": [
-    { "word_id": "uuid-1", "position": 1 },
-    { "word_id": "uuid-2", "position": 2 }
-  ]
-}
-```
-**Response JSON**: `{ "message": "WORDS_REORDERED" }`  
-**Success**: `200 OK`.  
-**Errors**: `401`, `404`, `422` invalid payload, `500`.
+_Endpoint removed (no longer needed after dropping word positions)._  
 
 ### 2.4 Generation Runs & Sentences
 
@@ -511,40 +499,5 @@ All endpoints (except Supabase Auth) live under `/api/*`, require a valid Supaba
 ### 4.2 Sets & Words
 - Enforce max five words per set (PRD + DB constraint); acknowledge that increasing this requires schema and UX updates.
 - Validate CEFRLevel against enum `A1`–`C2`.
-- `words.position` must stay within 1–5, unique per set; reorder endpoint runs within transaction to avoid gaps.
-- `words.en` normalized via `normalize_en` to enforce uniqueness; API rejects duplicates before hitting DB constraint.
-- Updating or deleting words while a generation is running returns `409`.
-
-### 4.3 Generation Runs & Sentences
-- Before generating, ensure at least one word exists and user has remaining quota (daily cap 10 from `generation_log`).
-- Input temperature clamped to 0–1; `model_id` validated against allowlist (OpenRouter models configured in env).
-- Sentences truncated to ≤15 Polish words using `count_words`; backend verifies and rejects LLM responses exceeding the limit, re-prompting if necessary.
-- Store `words_snapshot` and AI prompt/response metadata for reproducibility and onboarding analytics.
-- `idempotency_key` + `user_id` unique constraint handles retried network calls.
-
-### 4.4 Exercise Sessions & Attempts
-- Only one active session per set per user; new session creation auto-finishes previous or returns `409`.
-- When session starts, backend materializes ordered sentences from chosen generation to avoid drift even if words change later.
-- Attempt validator normalizes answer (lowercase, punctuation stripped), enforces proper articles, and highlights diff for client.
-- `attempt_no` auto-increments when omitted; manual overrides validated against uniqueness constraint.
-- `SESSION_FINISHED` requires all sentences attempted or explicit abandon reason; finishing triggers rating reminder event.
-
-### 4.5 Ratings
-- Stars integer 1–5; invalid input returns `422`.
-- Comment length ≤500 chars; sanitized to prevent HTML injection.
-- Ratings allowed only after `finished_at` is set; otherwise `409`.
-
-### 4.6 Dashboard, Usage, Events
-- `/api/usage/daily` depends on `generation_log` rows grouped by UTC date respecting timezone stored in `profiles`.
-- `/api/event-log` validates `event_type` against whitelist (e.g., `set_created`, `attempt_submitted`, `clicked_check`) and caps payload rate to avoid noisy metrics.
-- Dashboard endpoint preloads data via indexes (`idx_sets_user_created`, `idx_sessions_user_started`) to keep response <200 ms.
-
-### 4.7 Error handling & responses
-- Standardized error envelope: `{ "error": { "code": "LIMIT_REACHED", "message": "Daily generation quota exceeded." } }`.
-- Use early guard clauses for invalid state (missing ownership, out-of-quota) and log structured errors for observability.
-
-### 4.8 Assumptions & open questions
-- Rating comments require either an added nullable `comment` column on `ratings` or auxiliary storage in `event_log`. Until schema change, default to event log entry referencing the rating row.
-- PRD and DB are aligned on the five-word-per-set limit; any future increase demands schema updates (`words_count` cap, validation) and UI adjustments.
-- AI sentence regeneration is synchronous for now; consider background job + webhook if latency exceeds 30s KPI.
-
+// position functionality removed.
+- `words.en` normalized via `normalize_en`

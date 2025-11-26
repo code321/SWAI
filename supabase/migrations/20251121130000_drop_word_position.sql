@@ -10,4 +10,7 @@ ALTER TABLE public.words
 ALTER TABLE public.words
   DROP COLUMN IF EXISTS position;
 
+-- 3. Drop index on (user_id, set_id, position)
+DROP INDEX IF EXISTS idx_words_position;
+
 COMMIT;

@@ -6,7 +6,7 @@ import type { SetDetailDTO, WordDTO } from '../../../types';
  * 
  * Implements:
  * - Fetch set metadata with user_id authorization
- * - Fetch all words ordered by position
+ * - Fetch all words ordered by created_at
  * - Fetch latest generation run metadata (if exists)
  * - Return complete SetDetailDTO or null if not found
  * 

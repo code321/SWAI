@@ -19,15 +19,11 @@ create table words (
   -- Normalized English for case-insensitive comparison
   en_norm text generated always as (normalize_en(en)) stored,
   
-  -- Position within the set (1-5)
-  position smallint not null check (position between 1 and ),
-  
   -- Audit timestamp
   created_at timestamptz not null default now(),
   
-  -- Unique constraints: no duplicate words (normalized) per set, no duplicate positions
-  unique(user_id, set_id, en_norm),
-  unique(user_id, set_id, position)
+  -- Unique constraints: no duplicate words (normalized) per set
+  unique(user_id, set_id, en_norm)
 );
 
 comment on table words is 'Individual vocabulary words within sets (max 5 per set)';
@@ -36,7 +32,6 @@ comment on column words.set_id is 'Parent vocabulary set';
 comment on column words.pl is 'Polish translation';
 comment on column words.en is 'English word or phrase';
 comment on column words.en_norm is 'Normalized English for case-insensitive duplicate detection';
-comment on column words.position is 'Position in set (1-5), used for ordering';
 comment on column words.created_at is 'Timestamp when the word was added';
 
 -- Enable Row Level Security

@@ -23,10 +23,8 @@
 | | pl | text | NOT NULL |
 | | en | text | NOT NULL |
 | | en_norm | text | GENERATED ALWAYS AS (normalize_en(en)) STORED |
-| | position | smallint | NOT NULL CHECK (position BETWEEN 1 AND 20) |
 | | created_at | timestamptz | NOT NULL DEFAULT now() |
 | | UNIQUE(user_id, set_id, en_norm) | | |
-| | UNIQUE(user_id, set_id, position) | | |
 
 | **generation_runs** | id | uuid | PRIMARY KEY DEFAULT gen_random_uuid() |
 | | user_id | uuid | NOT NULL REFERENCES profiles(user_id) ON DELETE CASCADE |
@@ -109,7 +107,6 @@ CREATE INDEX idx_sets_name_prefix ON sets USING btree (name text_pattern_ops);
 -- Często używane filtry
 CREATE INDEX idx_sets_user_created ON sets (user_id, created_at DESC);
 CREATE INDEX idx_sets_user_level ON sets (user_id, level);
-CREATE INDEX idx_words_position ON words (user_id, set_id, position);
 CREATE INDEX idx_gen_runs_recent ON generation_runs (user_id, set_id, occurred_at DESC);
 CREATE INDEX idx_sentences_gen ON sentences (user_id, generation_id);
 CREATE INDEX idx_sessions_user_started ON exercise_sessions (user_id, started_at DESC);
