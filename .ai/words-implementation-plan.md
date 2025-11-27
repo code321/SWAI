@@ -16,7 +16,7 @@ Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu u�
 {
   "words": [
     { "pl": "samolot", "en": "plane" },
-    { "pl": "lotnisko", "en": "airport", "position": 3 }
+    { "pl": "lotnisko", "en": "airport"}
   ]
 }
 ```
@@ -27,8 +27,7 @@ Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu u�
 | `words`   | Tablica 1-5 elementów |
 | `pl`      | `string` niepusta |
 | `en`      | `string` niepusta |
-| `position`| `int` 1-5 (opcjonalnie) |
-| Duplikaty | Brak duplikatów `en`/`position` w payloadzie |
+| Duplikaty | Brak duplikatów `en` w payloadzie |
 
 ## 3. Wykorzystywane typy
 
@@ -43,7 +42,7 @@ Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu u�
 | 400 | Nieprawidłowe dane (Zod) | `ApiErrorDTO` |
 | 401 | Brak autoryzacji | `ApiErrorDTO` |
 | 404 | Zestaw nie istnieje / nie należy do użytkownika | `ApiErrorDTO` |
-| 409 | Konflikt: duplikat `en`/`position` | `ApiErrorDTO` |
+| 409 | Konflikt: duplikat `en` | `ApiErrorDTO` |
 | 422 | >5 słów lub pozycja poza zakresem | `ApiErrorDTO` |
 | 500 | Błąd serwera | `ApiErrorDTO` |
 
@@ -58,9 +57,8 @@ Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu u�
 3. `addWordsService`:
    1. W transakcji:
       - Sprawdza istnienie zestawu i przynależność do `userId`.
-      - Pobiera aktualne `words_count` i zajęte `position`/`en_norm` (przez `select` z `words`).
-      - Wylicza brakujące `position` dla słów bez `position` (kolejne wolne).
-      - Tworzy tablicę insertów (`pl`, `en`, `position`, `set_id`, `user_id`).
+      - Pobiera aktualne `words_count` i zajęte `en_norm` (przez `select` z `words`).
+      - Tworzy tablicę insertów (`pl`, `en`, `set_id`, `user_id`).
       - Wykonuje `insert` z opcją `returning`.
       - Aktualizuje `sets.words_count` (+N).
    2. Zwraca `added` i nowe `words_count`.
@@ -81,14 +79,14 @@ Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu u�
 | Payload niezgodny ze schematem | 400 | `INVALID_BODY` |
 | Brak sesji | 401 | `UNAUTHENTICATED` |
 | Zestaw nie istnieje / cudzy | 404 | `SET_NOT_FOUND` |
-| Duplikat `en_norm` lub `position` (konflikt unikalności) | 409 | `WORD_DUPLICATE` |
-| >5 pozycji lub >5 słów | 422 | `POSITION_RANGE_EXCEEDED` lub `WORDS_LIMIT_EXCEEDED` |
+| Duplikat `en_norm` (konflikt unikalności) | 409 | `WORD_DUPLICATE` |
+| >5 pozycji lub >5 słów | 422 | `WORDS_LIMIT_EXCEEDED` |
 | Inne nieobsłużone | 500 | `INTERNAL_SERVER_ERROR` |
 
 ## 8. Rozważania dotyczące wydajności
 
 - **Bulk insert** zamiast pętli – pojedynczy round-trip do bazy.
-- Indeksy na `words(set_id, en_norm)` i `words(set_id, position)` istnieją ➜ szybkie sprawdzanie konfliktów.
+- Indeksy na `words(set_id, en_norm)` i `words(set_id)` istnieją ➜ szybkie sprawdzanie konfliktów.
 - Ograniczenie do 5 słów minimalizuje payload.
 
 ## 9. Etapy wdrożenia
@@ -99,7 +97,6 @@ Endpoint umożliwia dodanie jednego lub wielu słów do istniejącego zestawu u�
    export const wordInputSchema = z.object({
      pl: z.string().min(1).max(100),
      en: z.string().min(1).max(100),
-     position: z.number().int().min(1).max(5).optional(),
    });
    export const wordsAddSchema = z.object({
      words: z.array(wordInputSchema).min(1).max(5),

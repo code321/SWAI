@@ -144,3 +144,65 @@ export const setUpdateCommandSchema = z.object({
 
 export type SetUpdateCommandSchema = z.infer<typeof setUpdateCommandSchema>;
 
+// ---------------------------------------------------------------------------
+// POST /api/sets/{setId}/words - Add words to set
+// ---------------------------------------------------------------------------
+
+/**
+ * Schema for validating POST /api/sets/{setId}/words request body.
+ * Allows adding 1-5 new words to an existing set.
+ * 
+ * Validates:
+ * - words: Array of 1-5 words (required)
+ * - Each word must have pl and en fields (1-200 chars each)
+ * - English words are normalized for duplicate detection
+ */
+export const wordsAddCommandSchema = z.object({
+  words: z.array(wordCreateInputSchema)
+    .min(1, 'At least one word is required')
+    .max(5, 'Maximum 5 words allowed per request'),
+});
+
+export type WordsAddCommandSchema = z.infer<typeof wordsAddCommandSchema>;
+
+// ---------------------------------------------------------------------------
+// PATCH /api/sets/{setId}/words/{wordId} - Update word
+// ---------------------------------------------------------------------------
+
+/**
+ * Schema for validating wordId URL parameter.
+ */
+export const wordIdParamSchema = z.object({
+  wordId: uuidSchema,
+});
+
+export type WordIdParamSchema = z.infer<typeof wordIdParamSchema>;
+
+/**
+ * Schema for validating PATCH /api/sets/{setId}/words/{wordId} request body.
+ * All fields are optional (partial update).
+ * At least one field must be provided.
+ * 
+ * Validates:
+ * - pl: Optional new Polish word/phrase (1-200 chars)
+ * - en: Optional new English translation (1-200 chars, trimmed)
+ */
+export const wordUpdateCommandSchema = z.object({
+  pl: z.string()
+    .min(1, 'Polish word cannot be empty')
+    .max(200, 'Polish word too long')
+    .trim()
+    .optional(),
+  en: z.string()
+    .min(1, 'English word cannot be empty')
+    .max(200, 'English word too long')
+    .trim()
+    .refine(val => !val || val.length > 0, 'English word cannot be only whitespace')
+    .optional(),
+}).refine(
+  data => data.pl !== undefined || data.en !== undefined,
+  'At least one field (pl or en) must be provided'
+);
+
+export type WordUpdateCommandSchema = z.infer<typeof wordUpdateCommandSchema>;
+
