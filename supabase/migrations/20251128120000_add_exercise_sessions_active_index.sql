@@ -12,3 +12,6 @@ create index idx_exercise_sessions_user_active
 comment on index idx_exercise_sessions_user_active is 
   'Optimizes queries checking for active sessions (finished_at IS NULL) per user and set';
 
+
+
+

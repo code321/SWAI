@@ -147,3 +147,5 @@ Zapytania wykonujemy na serwerze; w przypadku błędu zwracamy status 500 i wyś
 4. **DashboardGrid**: ułóż responsywny układ Tailwind (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3`).
 5. **Hooki**: `useGenerationCounter`, `useDashboardData`.
 6. **Styling**: wykorzystaj Shadcn/ui `Card`, `Button`, ikonografia Heroicons.
+
+

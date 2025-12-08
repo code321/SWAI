@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { DashboardGrid } from '../../components/dashboard/DashboardGrid';
+import { GenerationCounter } from '../../components/dashboard/GenerationCounter';
+import { UserMenu } from '../../components/dashboard/UserMenu';
+import type { DashboardDTO, UsageDailyDTO } from '../../types';
+
+// TODO: Enable authentication when auth system is implemented
+// This page will require authentication in production
+export const prerender = false;
+
+// Get access token from cookie (optional for now)
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+
+// Fetch dashboard data server-side
+let dashboard: DashboardDTO | null = null;
+let usage: UsageDailyDTO | null = null;
+let error: string | null = null;
+
+try {
+  const baseUrl = Astro.url.origin;
+  
+  // Prepare headers with optional auth token
+  const headers: Record<string, string> = {};
+  if (accessToken) {
+    headers['Cookie'] = `sb-access-token=${accessToken}`;
+  }
+
+  // Fetch usage data
+  const usageResponse = await fetch(`${baseUrl}/api/usage/daily`, {
+    headers,
+  });
+
+  if (!usageResponse.ok) {
+    throw new Error('Failed to fetch usage data');
+  }
+
+  usage = await usageResponse.json();
+
+  // Fetch dashboard data with events
+  const dashboardResponse = await fetch(`${baseUrl}/api/dashboard?include_events=true`, {
+    headers,
+  });
+
+  if (!dashboardResponse.ok) {
+    throw new Error('Failed to fetch dashboard data');
+  }
+
+  dashboard = await dashboardResponse.json();
+} catch (err) {
+  console.error('Error loading dashboard:', err);
+  error = 'Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później.';
+}
+---
+
+<Layout title="Dashboard - SmartWordsAI">
+  <main class="min-h-screen bg-gray-50">
+    {error ? (
+      <div class="container mx-auto px-4 py-8">
+        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
+          {error}
+        </div>
+        <button 
+          onclick="window.location.reload()" 
+          class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Odśwież
+        </button>
+      </div>
+    ) : dashboard && usage ? (
+      <div class="container mx-auto px-4 py-8">
+        <!-- Top Navigation Bar -->
+        <div class="mb-6 flex items-center justify-between">
+          <div class="text-xl font-bold text-blue-600">
+            SmartWordsAI
+          </div>
+          <UserMenu userEmail={null} client:load />
+        </div>
+
+        <!-- Dashboard Header -->
+        <header class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p class="text-gray-600 mt-1">Witaj ponownie! Kontynuuj naukę.</p>
+          </div>
+          
+          <!-- Generation Counter - React Component -->
+          <GenerationCounter usage={usage} client:load />
+        </header>
+
+        <!-- Dashboard Grid - React Component -->
+        <DashboardGrid dashboard={dashboard} usage={usage} client:load />
+      </div>
+    ) : (
+      <div class="container mx-auto px-4 py-8 text-center">
+        <div class="text-gray-600">Ładowanie...</div>
+      </div>
+    )}
+  </main>
+</Layout>
+

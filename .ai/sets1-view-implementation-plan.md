@@ -152,3 +152,6 @@ Mapping: `SetSummaryDTO` → `SetSummaryVM` (camelCase + `hasActiveSession` obec
 7. **Infinite scroll** – `IntersectionObserver` lub `react-intersection-observer`.
 8. **Akcje kart** – obsługa `onSelect`, `onEdit`, `onDelete`.
 9. **Obsługa błędów** – toast system (`@/components/ui/use-toast`).
+
+
+

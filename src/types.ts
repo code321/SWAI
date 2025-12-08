@@ -190,8 +190,9 @@ export type GenerationSentencesListResponseDTO =
 
 export type SessionCreateCommand = Pick<
   TablesInsert<"exercise_sessions">,
-  "set_id" | "generation_id"
+  "set_id"
 > & {
+  generation_id?: Tables<"exercise_sessions">["generation_id"]
   mode: "translate"
 }
 
@@ -280,6 +281,58 @@ export type RatingDTO = Pick<
 export type RatingResponseDTO = RatingDTO | null
 
 // ---------------------------------------------------------------------------
+// Sets View Models (Frontend)
+// ---------------------------------------------------------------------------
+
+export type SetsQueryState = {
+  search?: string
+  level?: CEFRLevel
+  cursor?: string
+  limit: number
+  sort: "created_at_desc" | "name_asc"
+}
+
+export type SetSummaryVM = {
+  id: UUID
+  name: string
+  level: CEFRLevel
+  wordsCount: number
+  createdAt: ISODateString
+  hasActiveSession: boolean
+}
+
+export type SetsPageVM = {
+  items: SetSummaryVM[]
+  nextCursor?: string
+  count: number
+}
+
+// ---------------------------------------------------------------------------
+// Set Detail View Models (Frontend)
+// ---------------------------------------------------------------------------
+
+export type WordVM = {
+  id: UUID
+  pl: string
+  en: string
+}
+
+export type SetDetailVM = {
+  id: UUID
+  name: string
+  level: CEFRLevel
+  words: WordVM[]
+  wordsCount: number
+  latestGeneration?: { id: UUID; occurredAt: ISODateString } | null
+}
+
+export enum GenerationStatus {
+  Idle = "idle",
+  Loading = "loading",
+  Ready = "ready"
+}
+
+// ---------------------------------------------------------------------------
 // Usage & Dashboard
 // ---------------------------------------------------------------------------
 
@@ -294,11 +347,6 @@ export type UsageDailyDTO = {
   next_reset_at: ISODateString
 }
 
-export type DashboardEventDTO = Pick<
-  Tables<"event_log">,
-  "id" | "event_type" | "entity_id" | "occurred_at"
->
-
 export type DashboardActiveSessionDTO = {
   session_id: Tables<"exercise_sessions">["id"]
   set_id: Tables<"exercise_sessions">["set_id"]
@@ -309,7 +357,6 @@ export type DashboardDTO = {
   sets_total: number
   active_session?: DashboardActiveSessionDTO | null
   remaining_generations: number
-  events?: DashboardEventDTO[]
 }
 
 // ---------------------------------------------------------------------------
