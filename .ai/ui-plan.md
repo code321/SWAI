@@ -52,7 +52,7 @@ Każda strefa posiada własny układ (header, footer) oraz zestaw wysp React dla
               ├── /app/dashboard
               ├── /app/sets
               ├── /app/sets/:id
-              └── /app/sessions/:id (+Rating modal)
+              └── /app/sessions/:id
 ```
 
 Nawigacja opiera się na **Astro+React Router** w obrębie App Shellu. PublicLayout nie ładuje ciężkich pakietów React.
