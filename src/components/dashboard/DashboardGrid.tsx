@@ -1,7 +1,7 @@
-import type { DashboardDTO, UsageDailyDTO } from '@/types';
-import { CreateSetCard } from './CreateSetCard';
-import { ContinueSessionCard } from './ContinueSessionCard';
-import { StatsCard } from './StatsCard';
+import type { DashboardDTO, UsageDailyDTO } from "@/types";
+import { CreateSetCard } from "./CreateSetCard";
+import { ContinueSessionCard } from "./ContinueSessionCard";
+import { StatsCard } from "./StatsCard";
 
 interface DashboardGridProps {
   dashboard: DashboardDTO;
@@ -10,7 +10,7 @@ interface DashboardGridProps {
 
 /**
  * DashboardGrid component
- * 
+ *
  * Main layout component for the dashboard
  * Renders all dashboard cards in a responsive grid
  */
@@ -23,13 +23,10 @@ export function DashboardGrid({ dashboard, usage }: DashboardGridProps) {
       <CreateSetCard />
 
       {/* Continue Session Card - conditional */}
-      {hasActiveSession && dashboard.active_session && (
-        <ContinueSessionCard activeSession={dashboard.active_session} />
-      )}
+      {hasActiveSession && dashboard.active_session && <ContinueSessionCard activeSession={dashboard.active_session} />}
 
       {/* Stats Card - always visible */}
       <StatsCard setsTotal={dashboard.sets_total} />
     </div>
   );
 }
-

@@ -1,11 +1,11 @@
-import type { SetsQueryState, CEFRLevel } from "../../types"
-import { SearchInput } from "./SearchInput"
-import { LevelSelect } from "./LevelSelect"
+import type { SetsQueryState, CEFRLevel } from "../../types";
+import { SearchInput } from "./SearchInput";
+import { LevelSelect } from "./LevelSelect";
 
-type FiltersBarProps = {
-  search?: string
-  level?: CEFRLevel
-  onChange: (partial: Partial<SetsQueryState>) => void
+interface FiltersBarProps {
+  search?: string;
+  level?: CEFRLevel;
+  onChange: (partial: Partial<SetsQueryState>) => void;
 }
 
 /**
@@ -14,37 +14,27 @@ type FiltersBarProps = {
  */
 export function FiltersBar({ search, level, onChange }: FiltersBarProps) {
   const handleSearchChange = (value: string | undefined) => {
-    onChange({ search: value })
-  }
+    onChange({ search: value });
+  };
 
   const handleLevelChange = (value: CEFRLevel | undefined) => {
-    onChange({ level: value })
-  }
+    onChange({ level: value });
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 border">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Search Input */}
         <div>
-          <label
-            htmlFor="search-input"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="search-input" className="block text-sm font-medium text-gray-700 mb-2">
             Wyszukaj
           </label>
-          <SearchInput
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Szukaj po nazwie zestawu..."
-          />
+          <SearchInput value={search} onChange={handleSearchChange} placeholder="Szukaj po nazwie zestawu..." />
         </div>
 
         {/* Level Filter */}
         <div>
-          <label
-            htmlFor="level-select"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="level-select" className="block text-sm font-medium text-gray-700 mb-2">
             Poziom CEFR
           </label>
           <LevelSelect value={level} onChange={handleLevelChange} />
@@ -74,6 +64,5 @@ export function FiltersBar({ search, level, onChange }: FiltersBarProps) {
         </div>
       )}
     </div>
-  )
+  );
 }
-

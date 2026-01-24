@@ -1,11 +1,11 @@
-import { GenerationStatus } from "../../../types"
+import { GenerationStatus } from "../../../types";
 
-type GenerateButtonProps = {
-  status: GenerationStatus
-  onGenerate: () => void
-  onStartSession: () => void
-  remainingGenerations: number
-  wordsCount: number
+interface GenerateButtonProps {
+  status: GenerationStatus;
+  onGenerate: () => void;
+  onStartSession: () => void;
+  remainingGenerations: number;
+  wordsCount: number;
 }
 
 /**
@@ -20,10 +20,7 @@ export function GenerateButton({
   wordsCount,
 }: GenerateButtonProps) {
   // Determine if button should be disabled
-  const isDisabled =
-    status === GenerationStatus.Loading ||
-    wordsCount === 0 ||
-    remainingGenerations === 0
+  const isDisabled = status === GenerationStatus.Loading || wordsCount === 0 || remainingGenerations === 0;
 
   // Determine button label and action
   const getButtonConfig = () => {
@@ -33,24 +30,24 @@ export function GenerateButton({
           label: "Generowanie...",
           onClick: () => {},
           className: "bg-blue-400 cursor-not-allowed",
-        }
+        };
       case GenerationStatus.Ready:
         return {
           label: "Rozpocznij sesję",
           onClick: onStartSession,
           className: "bg-green-600 hover:bg-green-700",
-        }
+        };
       case GenerationStatus.Idle:
       default:
         return {
           label: "Generuj zdania",
           onClick: onGenerate,
           className: "bg-blue-600 hover:bg-blue-700",
-        }
+        };
     }
-  }
+  };
 
-  const config = getButtonConfig()
+  const config = getButtonConfig();
 
   return (
     <div className="mt-4 sm:mt-6 flex flex-col items-stretch sm:items-start gap-2">
@@ -72,14 +69,7 @@ export function GenerateButton({
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path
               className="opacity-75"
               fill="currentColor"
@@ -96,17 +86,10 @@ export function GenerateButton({
       </p>
 
       {/* Display warnings */}
-      {wordsCount === 0 && (
-        <p className="text-xs sm:text-sm text-red-600">
-          Dodaj słówka, aby móc wygenerować zdania.
-        </p>
-      )}
+      {wordsCount === 0 && <p className="text-xs sm:text-sm text-red-600">Dodaj słówka, aby móc wygenerować zdania.</p>}
       {remainingGenerations === 0 && wordsCount > 0 && (
-        <p className="text-xs sm:text-sm text-red-600">
-          Wykorzystano dzienny limit generacji. Spróbuj jutro.
-        </p>
+        <p className="text-xs sm:text-sm text-red-600">Wykorzystano dzienny limit generacji. Spróbuj jutro.</p>
       )}
     </div>
-  )
+  );
 }
-

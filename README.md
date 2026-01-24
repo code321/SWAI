@@ -133,5 +133,3 @@ For detailed product requirements and success metrics, see [PRD](./.ai/prd.md) a
 ## License
 
 This project is currently unlicensed (all rights reserved). If you plan to use, modify, or distribute this code, please add an explicit `LICENSE` file and update this section accordingly.
-
-

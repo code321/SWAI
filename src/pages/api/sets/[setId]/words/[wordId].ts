@@ -1,28 +1,28 @@
-import type { APIRoute } from 'astro';
-import { ZodError } from 'zod';
+import type { APIRoute } from "astro";
+import { ZodError } from "zod";
 
-import { setIdParamSchema, wordIdParamSchema, wordUpdateCommandSchema } from '../../../../../lib/schemas/sets';
-import { updateWord } from '../../../../../lib/services/sets/updateWord';
-import { deleteWord } from '../../../../../lib/services/sets/deleteWord';
-import type { WordUpdateResponseDTO, WordDeleteResponseDTO, ApiErrorDTO } from '../../../../../types';
+import { setIdParamSchema, wordIdParamSchema, wordUpdateCommandSchema } from "../../../../../lib/schemas/sets";
+import { updateWord } from "../../../../../lib/services/sets/updateWord";
+import { deleteWord } from "../../../../../lib/services/sets/deleteWord";
+import type { WordUpdateResponseDTO, WordDeleteResponseDTO, ApiErrorDTO } from "../../../../../types";
 
 // Disable prerendering for this dynamic route
 export const prerender = false;
 
 /**
  * PATCH /api/sets/{setId}/words/{wordId}
- * 
+ *
  * Updates an existing word's translations (pl and/or en).
  * All fields in request body are optional (partial update).
- * 
+ *
  * URL Parameters:
  * - setId: UUID of the set containing the word
  * - wordId: UUID of the word to update
- * 
+ *
  * Request Body (at least one field required):
  * - pl: Optional new Polish word/phrase (1-200 chars)
  * - en: Optional new English translation (1-200 chars)
- * 
+ *
  * Returns:
  * - 200: Successfully updated with WordUpdateResponseDTO (WordDTO)
  * - 400: Invalid UUID or request body
@@ -39,19 +39,19 @@ export const PATCH: APIRoute = async (context) => {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'SERVER_ERROR',
-            message: 'Supabase client not initialized.',
+            code: "SERVER_ERROR",
+            message: "Supabase client not initialized.",
           },
         } satisfies ApiErrorDTO),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          headers: { "Content-Type": "application/json; charset=utf-8" },
         }
       );
     }
 
     // TODO: Get user ID from authentication middleware when implemented
-    const userId = '14cf5f38-c354-400a-be38-069e4cd41855'; // Placeholder
+    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
 
     // Validate setId parameter
     let setId: string;
@@ -63,13 +63,13 @@ export const PATCH: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'INVALID_SET_ID',
-              message: 'setId must be a valid UUID.',
+              code: "INVALID_SET_ID",
+              message: "setId must be a valid UUID.",
             },
           } satisfies ApiErrorDTO),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -86,13 +86,13 @@ export const PATCH: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'INVALID_WORD_ID',
-              message: 'wordId must be a valid UUID.',
+              code: "INVALID_WORD_ID",
+              message: "wordId must be a valid UUID.",
             },
           } satisfies ApiErrorDTO),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -107,13 +107,13 @@ export const PATCH: APIRoute = async (context) => {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'INVALID_JSON',
-            message: 'Invalid JSON in request body.',
+            code: "INVALID_JSON",
+            message: "Invalid JSON in request body.",
           },
         } satisfies ApiErrorDTO),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          headers: { "Content-Type": "application/json; charset=utf-8" },
         }
       );
     }
@@ -130,13 +130,13 @@ export const PATCH: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'INVALID_BODY',
-              message: `Validation failed: ${errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}`,
+              code: "INVALID_BODY",
+              message: `Validation failed: ${errors.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")}`,
             },
           } satisfies ApiErrorDTO),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -152,13 +152,13 @@ export const PATCH: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'WORD_NOT_FOUND',
-              message: 'Word not found.',
+              code: "WORD_NOT_FOUND",
+              message: "Word not found.",
             },
           } satisfies ApiErrorDTO),
           {
             status: 404,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -168,22 +168,21 @@ export const PATCH: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(response), {
         status: 200,
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        headers: { "Content-Type": "application/json; charset=utf-8" },
       });
-
     } catch (error: any) {
       // Handle specific service errors
-      if (error.code === 'WORD_DUPLICATE') {
+      if (error.code === "WORD_DUPLICATE") {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'WORD_DUPLICATE',
+              code: "WORD_DUPLICATE",
               message: error.message,
             },
           } satisfies ApiErrorDTO),
           {
             status: 409,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -191,22 +190,21 @@ export const PATCH: APIRoute = async (context) => {
       // Re-throw to be caught by outer catch
       throw error;
     }
-
   } catch (error) {
     // Log error for debugging
-    console.error('Error in PATCH /api/sets/{setId}/words/{wordId}:', error);
+    console.error("Error in PATCH /api/sets/{setId}/words/{wordId}:", error);
 
     // Return generic server error
     return new Response(
       JSON.stringify({
         error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update word.',
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update word.",
         },
       } satisfies ApiErrorDTO),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        headers: { "Content-Type": "application/json; charset=utf-8" },
       }
     );
   }
@@ -214,13 +212,13 @@ export const PATCH: APIRoute = async (context) => {
 
 /**
  * DELETE /api/sets/{setId}/words/{wordId}
- * 
+ *
  * Permanently deletes a word from a set and updates words_count.
- * 
+ *
  * URL Parameters:
  * - setId: UUID of the set containing the word
  * - wordId: UUID of the word to delete
- * 
+ *
  * Returns:
  * - 200: Successfully deleted with WordDeleteResponseDTO
  * - 400: Invalid UUID
@@ -236,19 +234,19 @@ export const DELETE: APIRoute = async (context) => {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'SERVER_ERROR',
-            message: 'Supabase client not initialized.',
+            code: "SERVER_ERROR",
+            message: "Supabase client not initialized.",
           },
         } satisfies ApiErrorDTO),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          headers: { "Content-Type": "application/json; charset=utf-8" },
         }
       );
     }
 
     // TODO: Get user ID from authentication middleware when implemented
-    const userId = '14cf5f38-c354-400a-be38-069e4cd41855'; // Placeholder
+    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
 
     // Validate setId parameter
     let setId: string;
@@ -260,13 +258,13 @@ export const DELETE: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'INVALID_SET_ID',
-              message: 'setId must be a valid UUID.',
+              code: "INVALID_SET_ID",
+              message: "setId must be a valid UUID.",
             },
           } satisfies ApiErrorDTO),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -283,13 +281,13 @@ export const DELETE: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'INVALID_WORD_ID',
-              message: 'wordId must be a valid UUID.',
+              code: "INVALID_WORD_ID",
+              message: "wordId must be a valid UUID.",
             },
           } satisfies ApiErrorDTO),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -304,13 +302,13 @@ export const DELETE: APIRoute = async (context) => {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'WORD_NOT_FOUND',
-            message: 'Word not found.',
+            code: "WORD_NOT_FOUND",
+            message: "Word not found.",
           },
         } satisfies ApiErrorDTO),
         {
           status: 404,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          headers: { "Content-Type": "application/json; charset=utf-8" },
         }
       );
     }
@@ -320,26 +318,24 @@ export const DELETE: APIRoute = async (context) => {
 
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      headers: { "Content-Type": "application/json; charset=utf-8" },
     });
-
   } catch (error) {
     // Log error for debugging
-    console.error('Error in DELETE /api/sets/{setId}/words/{wordId}:', error);
+    console.error("Error in DELETE /api/sets/{setId}/words/{wordId}:", error);
 
     // Return generic server error
     return new Response(
       JSON.stringify({
         error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete word.',
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to delete word.",
         },
       } satisfies ApiErrorDTO),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        headers: { "Content-Type": "application/json; charset=utf-8" },
       }
     );
   }
 };
-

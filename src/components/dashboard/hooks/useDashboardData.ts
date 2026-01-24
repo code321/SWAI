@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { DashboardDTO } from '@/types';
+import { useState, useEffect, useCallback } from "react";
+import type { DashboardDTO } from "@/types";
 
 /**
  * Custom hook for dashboard data management
- * 
+ *
  * Provides optional SWR-like functionality for revalidating dashboard data
  * Currently just wraps the initial SSR data, but can be extended for client-side updates
- * 
+ *
  * @param initial - Initial dashboard data from SSR
  * @returns Dashboard data and revalidation function
  */
@@ -22,16 +22,16 @@ export function useDashboardData(initial: DashboardDTO) {
     setIsRevalidating(true);
 
     try {
-      const response = await fetch('/api/dashboard');
-      
+      const response = await fetch("/api/dashboard");
+
       if (!response.ok) {
-        throw new Error('Failed to revalidate dashboard');
+        throw new Error("Failed to revalidate dashboard");
       }
 
       const newData = await response.json();
       setData(newData);
     } catch (error) {
-      console.error('Error revalidating dashboard:', error);
+      console.error("Error revalidating dashboard:", error);
       // Keep existing data on error
     } finally {
       setIsRevalidating(false);
@@ -59,4 +59,3 @@ export function useDashboardData(initial: DashboardDTO) {
     revalidate,
   };
 }
-

@@ -1,3 +1,2 @@
-export { useSets } from "./useSets"
-export { useIntersectionObserver } from "./useIntersectionObserver"
-
+export { useSets } from "./useSets";
+export { useIntersectionObserver } from "./useIntersectionObserver";

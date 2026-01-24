@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 interface StatsCardProps {
   setsTotal: number;
@@ -6,36 +6,23 @@ interface StatsCardProps {
 
 /**
  * StatsCard component
- * 
+ *
  * Shows total number of vocabulary sets
  * Entire card is clickable and navigates to /app/sets
  */
 export function StatsCard({ setsTotal }: StatsCardProps) {
   const handleClick = () => {
-    window.location.href = '/app/sets';
+    window.location.href = "/app/sets";
   };
 
   // Determine proper Polish plural form
-  const setsLabel =
-    setsTotal === 1
-      ? 'zestaw'
-      : setsTotal >= 2 && setsTotal <= 4
-      ? 'zestawy'
-      : 'zestawów';
+  const setsLabel = setsTotal === 1 ? "zestaw" : setsTotal >= 2 && setsTotal <= 4 ? "zestawy" : "zestawów";
 
   return (
-    <Card
-      onClick={handleClick}
-      className="hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group"
-    >
+    <Card onClick={handleClick} className="hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 group-hover:text-blue-600 transition-colors">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -45,9 +32,7 @@ export function StatsCard({ setsTotal }: StatsCardProps) {
           </svg>
           Twoje zestawy
         </CardTitle>
-        <CardDescription>
-          Zobacz wszystkie swoje zestawy słówek
-        </CardDescription>
+        <CardDescription>Zobacz wszystkie swoje zestawy słówek</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -57,12 +42,9 @@ export function StatsCard({ setsTotal }: StatsCardProps) {
         </div>
 
         {setsTotal === 0 && (
-          <p className="text-sm text-gray-500 mt-2">
-            Stwórz swój pierwszy zestaw, aby rozpocząć naukę
-          </p>
+          <p className="text-sm text-gray-500 mt-2">Stwórz swój pierwszy zestaw, aby rozpocząć naukę</p>
         )}
       </CardContent>
     </Card>
   );
 }
-

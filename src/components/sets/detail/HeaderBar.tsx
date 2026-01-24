@@ -1,8 +1,8 @@
-import type { CEFRLevel } from "../../../types"
+import type { CEFRLevel } from "../../../types";
 
-type HeaderBarProps = {
-  name: string
-  level: CEFRLevel
+interface HeaderBarProps {
+  name: string;
+  level: CEFRLevel;
 }
 
 /**
@@ -17,19 +17,16 @@ export function HeaderBar({ name, level }: HeaderBarProps) {
     B2: "bg-blue-200 text-blue-900",
     C1: "bg-purple-100 text-purple-800",
     C2: "bg-purple-200 text-purple-900",
-  }
+  };
 
   return (
     <div className="mb-4 md:mb-6">
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{name}</h1>
-        <span
-          className={`self-start sm:self-auto rounded-full px-3 py-1 text-sm font-medium ${levelColors[level]}`}
-        >
+        <span className={`self-start sm:self-auto rounded-full px-3 py-1 text-sm font-medium ${levelColors[level]}`}>
           {level}
         </span>
       </div>
     </div>
-  )
+  );
 }
-

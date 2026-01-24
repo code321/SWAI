@@ -1,4 +1,4 @@
-import type { UsageDailyDTO } from '@/types';
+import type { UsageDailyDTO } from "@/types";
 
 interface GenerationCounterProps {
   usage: UsageDailyDTO;
@@ -6,7 +6,7 @@ interface GenerationCounterProps {
 
 /**
  * GenerationCounter component
- * 
+ *
  * Displays generation quota in format "X/10 generacji dzisiaj"
  * Changes color to red when remaining === 0
  */
@@ -16,19 +16,11 @@ export function GenerationCounter({ usage }: GenerationCounterProps) {
   return (
     <div
       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-        isLimitReached
-          ? 'bg-red-50 text-red-700'
-          : 'bg-blue-50 text-blue-700'
+        isLimitReached ? "bg-red-50 text-red-700" : "bg-blue-50 text-blue-700"
       }`}
     >
       {/* Sparkles icon */}
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -43,4 +35,3 @@ export function GenerationCounter({ usage }: GenerationCounterProps) {
     </div>
   );
 }
-

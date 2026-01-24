@@ -295,7 +295,7 @@ All endpoints follow consistent error response format (`ApiErrorDTO`):
 ## 📝 Notes
 
 - All endpoints use `export const prerender = false` for SSR
-- Placeholder userId: `'14cf5f38-c354-400a-be38-069e4cd41855'`
+- Placeholder userId: `'bec776c2-538f-4375-a91e-03aba1adfbfa'`
 - Event logging is non-blocking (failures don't affect main operation)
 - English word normalization handled by Postgres function `normalize_en()`
 - All handlers follow Astro APIRoute conventions

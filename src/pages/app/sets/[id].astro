@@ -1,7 +1,7 @@
 ---
-import Layout from '../../../layouts/Layout.astro';
-import { SetDetailPage } from '../../../components/sets/detail/SetDetailPage';
-import { UserMenu } from '../../../components/dashboard/UserMenu';
+import Layout from "../../../layouts/Layout.astro";
+import { SetDetailPage } from "../../../components/sets/detail/SetDetailPage";
+import { UserMenu } from "../../../components/dashboard/UserMenu";
 
 // Disable prerendering for client-side data fetching
 export const prerender = false;
@@ -10,7 +10,7 @@ export const prerender = false;
 const { id } = Astro.params;
 
 if (!id) {
-  return Astro.redirect('/app/sets');
+  return Astro.redirect("/app/sets");
 }
 
 // TODO: Enable authentication when auth system is implemented
@@ -22,22 +22,10 @@ if (!id) {
     <div class="container mx-auto px-4 py-8">
       <!-- Top Navigation Bar -->
       <div class="mb-6 flex items-center justify-between">
-        <div class="text-xl font-bold text-blue-600">
-          SmartWordsAI
-        </div>
+        <div class="text-xl font-bold text-blue-600">SmartWordsAI</div>
         <div class="flex items-center gap-4">
-          <a 
-            href="/app/dashboard" 
-            class="text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            Dashboard
-          </a>
-          <a 
-            href="/app/sets" 
-            class="text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            Zestawy
-          </a>
+          <a href="/app/dashboard" class="text-gray-600 hover:text-gray-900 transition-colors"> Dashboard </a>
+          <a href="/app/sets" class="text-gray-600 hover:text-gray-900 transition-colors"> Zestawy </a>
           <UserMenu userEmail={null} client:load />
         </div>
       </div>
@@ -47,4 +35,3 @@ if (!id) {
     </div>
   </main>
 </Layout>
-

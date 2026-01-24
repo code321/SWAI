@@ -1,7 +1,7 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { SetsPage } from '../../components/sets/SetsPage';
-import { UserMenu } from '../../components/dashboard/UserMenu';
+import Layout from "../../layouts/Layout.astro";
+import { SetsPage } from "../../components/sets/SetsPage";
+import { UserMenu } from "../../components/dashboard/UserMenu";
 
 // Disable prerendering for client-side data fetching
 export const prerender = false;
@@ -15,16 +15,9 @@ export const prerender = false;
     <div class="container mx-auto px-4 py-8">
       <!-- Top Navigation Bar -->
       <div class="mb-6 flex items-center justify-between">
-        <div class="text-xl font-bold text-blue-600">
-          SmartWordsAI
-        </div>
+        <div class="text-xl font-bold text-blue-600">SmartWordsAI</div>
         <div class="flex items-center gap-4">
-          <a 
-            href="/app/dashboard" 
-            class="text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            Dashboard
-          </a>
+          <a href="/app/dashboard" class="text-gray-600 hover:text-gray-900 transition-colors"> Dashboard </a>
           <UserMenu userEmail={null} client:load />
         </div>
       </div>
@@ -34,4 +27,3 @@ export const prerender = false;
     </div>
   </main>
 </Layout>
-

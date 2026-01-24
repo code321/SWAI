@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback } from "react";
 
-type SearchInputProps = {
-  value?: string
-  onChange: (value: string | undefined) => void
-  placeholder?: string
-  debounceMs?: number
+interface SearchInputProps {
+  value?: string;
+  onChange: (value: string | undefined) => void;
+  placeholder?: string;
+  debounceMs?: number;
 }
 
 /**
@@ -17,37 +17,37 @@ export function SearchInput({
   placeholder = "Szukaj zestawów...",
   debounceMs = 300,
 }: SearchInputProps) {
-  const [localValue, setLocalValue] = useState(value)
+  const [localValue, setLocalValue] = useState(value);
 
   // Sync with external value changes
   useEffect(() => {
-    setLocalValue(value)
-  }, [value])
+    setLocalValue(value);
+  }, [value]);
 
   // Debounced onChange
   useEffect(() => {
     const timer = setTimeout(() => {
       // Only call onChange if value actually changed
       if (localValue !== value) {
-        onChange(localValue.trim() || undefined)
+        onChange(localValue.trim() || undefined);
       }
-    }, debounceMs)
+    }, debounceMs);
 
-    return () => clearTimeout(timer)
-  }, [localValue, debounceMs])
+    return () => clearTimeout(timer);
+  }, [localValue, debounceMs]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
+    const newValue = e.target.value;
     // Enforce 100 character limit
     if (newValue.length <= 100) {
-      setLocalValue(newValue)
+      setLocalValue(newValue);
     }
-  }, [])
+  }, []);
 
   const handleClear = useCallback(() => {
-    setLocalValue("")
-    onChange(undefined)
-  }, [onChange])
+    setLocalValue("");
+    onChange(undefined);
+  }, [onChange]);
 
   return (
     <div className="relative">
@@ -66,22 +66,11 @@ export function SearchInput({
           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
           aria-label="Wyczyść wyszukiwanie"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       )}
     </div>
-  )
+  );
 }
-

@@ -1,22 +1,22 @@
-import type { APIRoute } from 'astro';
-import { ZodError } from 'zod';
+import type { APIRoute } from "astro";
+import { ZodError } from "zod";
 
-import { sessionIdParamSchema } from '../../../lib/schemas/sessions';
-import { getSession } from '../../../lib/services/sessions/getSession';
-import { toApiError } from '../../../lib/utils';
-import type { SessionDetailDTO, ApiErrorDTO } from '../../../types';
+import { sessionIdParamSchema } from "../../../lib/schemas/sessions";
+import { getSession } from "../../../lib/services/sessions/getSession";
+import { toApiError } from "../../../lib/utils";
+import type { SessionDetailDTO, ApiErrorDTO } from "../../../types";
 
 export const prerender = false;
 
 /**
  * GET /api/sessions/{sessionId}
- * 
+ *
  * Retrieves details of an exercise session including progress and sentences.
  * Shows current state of the session (active or finished) with attempt statistics.
- * 
+ *
  * Path Parameters:
  * - sessionId: UUID of the session (required)
- * 
+ *
  * Returns:
  * - 200: Session details with SessionDetailDTO
  * - 400: Invalid sessionId format
@@ -26,6 +26,9 @@ export const prerender = false;
  */
 export const GET: APIRoute = async (context) => {
   try {
+    console.log("GET /api/sessions/{sessionId} called");
+    console.log("context", context);
+
     // Get Supabase client from middleware
     const supabase = context.locals.supabase;
 
@@ -33,19 +36,19 @@ export const GET: APIRoute = async (context) => {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'SERVER_ERROR',
-            message: 'Supabase client not initialized.',
+            code: "SERVER_ERROR",
+            message: "Supabase client not initialized.",
           },
         } satisfies ApiErrorDTO),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
+          headers: { "Content-Type": "application/json; charset=utf-8" },
         }
       );
     }
 
     // TODO: Get user ID from authentication middleware when implemented
-    const userId = '14cf5f38-c354-400a-be38-069e4cd41855'; // Placeholder
+    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
 
     // Validate sessionId parameter
     let validatedParams;
@@ -58,13 +61,13 @@ export const GET: APIRoute = async (context) => {
         return new Response(
           JSON.stringify({
             error: {
-              code: 'INVALID_SESSION_ID',
-              message: 'Invalid session ID format. Must be a valid UUID.',
+              code: "INVALID_SESSION_ID",
+              message: "Invalid session ID format. Must be a valid UUID.",
             },
           } satisfies ApiErrorDTO),
           {
             status: 400,
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            headers: { "Content-Type": "application/json; charset=utf-8" },
           }
         );
       }
@@ -80,42 +83,33 @@ export const GET: APIRoute = async (context) => {
 
       return new Response(JSON.stringify(response), {
         status: 200,
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        headers: { "Content-Type": "application/json; charset=utf-8" },
       });
-
     } catch (error: any) {
       // Map service errors to API errors with appropriate status codes
       const apiError = toApiError(error);
-      
-      return new Response(
-        JSON.stringify(apiError.body),
-        {
-          status: apiError.status,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        }
-      );
-    }
 
+      return new Response(JSON.stringify(apiError.body), {
+        status: apiError.status,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      });
+    }
   } catch (error) {
     // Log error for debugging
-    console.error('Error in GET /api/sessions/{sessionId}:', error);
+    console.error("Error in GET /api/sessions/{sessionId}:", error);
 
     // Return generic server error
     return new Response(
       JSON.stringify({
         error: {
-          code: 'SERVER_ERROR',
-          message: 'Failed to retrieve session.',
+          code: "SERVER_ERROR",
+          message: "Failed to retrieve session.",
         },
       } satisfies ApiErrorDTO),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        headers: { "Content-Type": "application/json; charset=utf-8" },
       }
     );
   }
 };
-
-
-
-

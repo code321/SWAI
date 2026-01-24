@@ -1,11 +1,11 @@
-import type { CEFRLevel } from "../../types"
+import type { CEFRLevel } from "../../types";
 
-type LevelSelectProps = {
-  value?: CEFRLevel
-  onChange: (value: CEFRLevel | undefined) => void
+interface LevelSelectProps {
+  value?: CEFRLevel;
+  onChange: (value: CEFRLevel | undefined) => void;
 }
 
-const CEFR_LEVELS: CEFRLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"]
+const CEFR_LEVELS: CEFRLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 /**
  * Select component for filtering by CEFR level.
@@ -13,9 +13,9 @@ const CEFR_LEVELS: CEFRLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"]
  */
 export function LevelSelect({ value, onChange }: LevelSelectProps) {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue = e.target.value
-    onChange(newValue === "" ? undefined : (newValue as CEFRLevel))
-  }
+    const newValue = e.target.value;
+    onChange(newValue === "" ? undefined : (newValue as CEFRLevel));
+  };
 
   return (
     <div className="relative">
@@ -34,21 +34,10 @@ export function LevelSelect({ value, onChange }: LevelSelectProps) {
       </select>
       {/* Custom dropdown arrow */}
       <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </div>
     </div>
-  )
+  );
 }
-

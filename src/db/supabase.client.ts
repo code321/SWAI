@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
-import type { SupabaseClient as BaseSupabaseClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
+import type { SupabaseClient as BaseSupabaseClient } from "@supabase/supabase-js";
 
-import type { Database } from '../db/database.types.ts';
+import type { Database } from "../db/database.types.ts";
 
 const supabaseUrl = import.meta.env.SUPABASE_URL;
 
@@ -15,7 +15,7 @@ const supabaseKey =
   import.meta.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase env vars missing – check .env file');
+  throw new Error("Supabase env vars missing – check .env file");
 }
 
 export const supabaseClient = createClient<Database>(supabaseUrl, supabaseKey, {
@@ -27,4 +27,3 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseKey, {
 });
 
 export type SupabaseClient = BaseSupabaseClient<Database>;
-

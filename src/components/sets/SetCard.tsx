@@ -1,21 +1,13 @@
-import { useState } from "react"
-import type { SetSummaryVM } from "../../types"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-  CardAction,
-} from "../ui/card"
-import { Button } from "../ui/button"
+import { useState } from "react";
+import type { SetSummaryVM } from "../../types";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction } from "../ui/card";
+import { Button } from "../ui/button";
 
-type SetCardProps = {
-  item: SetSummaryVM
-  onSelect: (id: string) => void
-  onEdit: (id: string) => void
-  onDelete: (id: string) => void
+interface SetCardProps {
+  item: SetSummaryVM;
+  onSelect: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 /**
@@ -23,49 +15,33 @@ type SetCardProps = {
  * Uses shadcn/ui Card components for consistent styling.
  */
 export function SetCard({ item, onSelect, onEdit, onDelete }: SetCardProps) {
-  const [showMenu, setShowMenu] = useState(false)
+  const [showMenu, setShowMenu] = useState(false);
 
   const handleDelete = () => {
-    if (
-      confirm(
-        `Czy na pewno chcesz usunąć zestaw "${item.name}"?\n\nTa operacja jest nieodwracalna.`
-      )
-    ) {
-      onDelete(item.id)
+    if (confirm(`Czy na pewno chcesz usunąć zestaw "${item.name}"?\n\nTa operacja jest nieodwracalna.`)) {
+      onDelete(item.id);
     }
-  }
+  };
 
   const handleSelect = () => {
-    onSelect(item.id)
-  }
+    onSelect(item.id);
+  };
 
   const handleEdit = () => {
-    onEdit(item.id)
-  }
+    onEdit(item.id);
+  };
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
         <CardTitle className="text-lg">{item.name}</CardTitle>
-        <CardDescription>
-          Utworzono: {new Date(item.createdAt).toLocaleDateString("pl-PL")}
-        </CardDescription>
+        <CardDescription>Utworzono: {new Date(item.createdAt).toLocaleDateString("pl-PL")}</CardDescription>
 
         {/* Action Menu */}
         <CardAction>
           <div className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowMenu(!showMenu)}
-              aria-label="Menu akcji"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+            <Button variant="ghost" size="icon" onClick={() => setShowMenu(!showMenu)} aria-label="Menu akcji">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -78,24 +54,16 @@ export function SetCard({ item, onSelect, onEdit, onDelete }: SetCardProps) {
             {/* Dropdown Menu */}
             {showMenu && (
               <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowMenu(false)}
-                />
+                <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-20">
                   <button
                     onClick={() => {
-                      handleEdit()
-                      setShowMenu(false)
+                      handleEdit();
+                      setShowMenu(false);
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg flex items-center gap-2"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -107,17 +75,12 @@ export function SetCard({ item, onSelect, onEdit, onDelete }: SetCardProps) {
                   </button>
                   <button
                     onClick={() => {
-                      handleDelete()
-                      setShowMenu(false)
+                      handleDelete();
+                      setShowMenu(false);
                     }}
                     className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-b-lg flex items-center gap-2"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -146,12 +109,7 @@ export function SetCard({ item, onSelect, onEdit, onDelete }: SetCardProps) {
 
           {/* Words Count */}
           <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -181,15 +139,10 @@ export function SetCard({ item, onSelect, onEdit, onDelete }: SetCardProps) {
       </CardContent>
 
       <CardFooter>
-        <Button
-          onClick={handleSelect}
-          className="w-full"
-          variant={item.hasActiveSession ? "secondary" : "default"}
-        >
+        <Button onClick={handleSelect} className="w-full" variant={item.hasActiveSession ? "secondary" : "default"}>
           {item.hasActiveSession ? "Kontynuuj ćwiczenia" : "Rozpocznij ćwiczenia"}
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

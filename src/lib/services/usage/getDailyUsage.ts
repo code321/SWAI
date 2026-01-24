@@ -1,5 +1,5 @@
-import type { SupabaseClient } from '../../../db/supabase.client';
-import type { UsageDailyDTO } from '../../../types';
+import type { SupabaseClient } from "../../../db/supabase.client";
+import type { UsageDailyDTO } from "../../../types";
 
 /**
  * Daily limit for generation runs per user.
@@ -8,12 +8,12 @@ const DAILY_GENERATION_LIMIT = 10;
 
 /**
  * Service function to get daily generation usage for a user.
- * 
+ *
  * Implements:
  * - Count today's generation runs
  * - Calculate remaining generations
  * - Determine next reset time (midnight in user's timezone)
- * 
+ *
  * @param supabase - Authenticated Supabase client
  * @param userId - Current user ID from auth token
  * @param timezone - User's timezone for calculating reset time
@@ -23,7 +23,7 @@ const DAILY_GENERATION_LIMIT = 10;
 export async function getDailyUsage(
   supabase: SupabaseClient,
   userId: string,
-  timezone: string = 'UTC'
+  timezone = "UTC"
 ): Promise<UsageDailyDTO> {
   // Calculate start of day in UTC
   const now = new Date();
@@ -32,14 +32,14 @@ export async function getDailyUsage(
 
   // Count generations today
   const { count: generationsToday, error: countError } = await supabase
-    .from('generation_runs')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', userId)
-    .gte('occurred_at', startOfDay.toISOString());
+    .from("generation_runs")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .gte("occurred_at", startOfDay.toISOString());
 
   if (countError) {
-    console.error('Error counting daily generations:', countError);
-    throw new Error('Failed to fetch daily usage stats');
+    console.error("Error counting daily generations:", countError);
+    throw new Error("Failed to fetch daily usage stats");
   }
 
   const used = generationsToday ?? 0;
@@ -57,4 +57,3 @@ export async function getDailyUsage(
     next_reset_at: nextReset.toISOString(),
   };
 }
-

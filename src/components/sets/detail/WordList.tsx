@@ -1,11 +1,11 @@
-import type { WordVM } from "../../../types"
-import { WordRow } from "./WordRow"
+import type { WordVM } from "../../../types";
+import { WordRow } from "./WordRow";
 
-type WordListProps = {
-  words: WordVM[]
-  onEdit: (word: WordVM) => void
-  onDelete: (wordId: string) => void
-  disabled?: boolean
+interface WordListProps {
+  words: WordVM[];
+  onEdit: (word: WordVM) => void;
+  onDelete: (wordId: string) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -17,12 +17,7 @@ export function WordList({ words, onEdit, onDelete, disabled }: WordListProps) {
     return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-12 text-center">
         <div className="text-gray-400 mb-4">
-          <svg
-            className="mx-auto h-10 w-10 sm:h-12 sm:w-12"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg className="mx-auto h-10 w-10 sm:h-12 sm:w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -31,30 +26,19 @@ export function WordList({ words, onEdit, onDelete, disabled }: WordListProps) {
             />
           </svg>
         </div>
-        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">
-          Brak słówek w zestawie
-        </h3>
-        <p className="text-sm sm:text-base text-gray-500">
-          Dodaj pierwsze słówko, aby rozpocząć naukę.
-        </p>
+        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Brak słówek w zestawie</h3>
+        <p className="text-sm sm:text-base text-gray-500">Dodaj pierwsze słówko, aby rozpocząć naukę.</p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="divide-y divide-gray-200 max-h-[60vh] overflow-y-auto">
         {words.map((word) => (
-          <WordRow
-            key={word.id}
-            word={word}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            disabled={disabled}
-          />
+          <WordRow key={word.id} word={word} onEdit={onEdit} onDelete={onDelete} disabled={disabled} />
         ))}
       </div>
     </div>
-  )
+  );
 }
-

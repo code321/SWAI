@@ -1,15 +1,15 @@
-import type { SupabaseClient } from '../../../db/supabase.client';
-import type { SetDetailDTO, WordDTO } from '../../../types';
+import type { SupabaseClient } from "../../../db/supabase.client";
+import type { SetDetailDTO, WordDTO } from "../../../types";
 
 /**
  * Service function to retrieve a single set with all its details.
- * 
+ *
  * Implements:
  * - Fetch set metadata with user_id authorization
  * - Fetch all words ordered by created_at
  * - Fetch latest generation run metadata (if exists)
  * - Return complete SetDetailDTO or null if not found
- * 
+ *
  * @param supabase - Authenticated Supabase client
  * @param userId - Current user ID from auth token
  * @param setId - Set UUID to retrieve
@@ -22,10 +22,10 @@ export async function getSetById(
 ): Promise<SetDetailDTO | null> {
   // Step 1: Fetch the set record
   const { data: setData, error: setError } = await supabase
-    .from('sets')
-    .select('id, name, level, words_count, created_at, updated_at, user_id')
-    .eq('id', setId)
-    .eq('user_id', userId)
+    .from("sets")
+    .select("id, name, level, words_count, created_at, updated_at, user_id")
+    .eq("id", setId)
+    .eq("user_id", userId)
     .single();
 
   if (setError || !setData) {
@@ -35,29 +35,29 @@ export async function getSetById(
 
   // Step 2: Fetch all words for this set – order by creation time to keep stable order
   const { data: wordsData, error: wordsError } = await supabase
-    .from('words')
-    .select('id, pl, en')
-    .eq('set_id', setId)
-    .order('created_at', { ascending: true });
+    .from("words")
+    .select("id, pl, en")
+    .eq("set_id", setId)
+    .order("created_at", { ascending: true });
 
   if (wordsError) {
-    console.error('Error fetching words:', wordsError);
-    throw new Error('Failed to fetch words for set');
+    console.error("Error fetching words:", wordsError);
+    throw new Error("Failed to fetch words for set");
   }
 
   const words: WordDTO[] = wordsData || [];
 
   // Step 3: Fetch the latest generation run for this set
   const { data: generationData, error: generationError } = await supabase
-    .from('generation_runs')
-    .select('id, occurred_at')
-    .eq('set_id', setId)
-    .order('occurred_at', { ascending: false })
+    .from("generation_runs")
+    .select("id, occurred_at")
+    .eq("set_id", setId)
+    .order("occurred_at", { ascending: false })
     .limit(1)
     .maybeSingle(); // Use maybeSingle() to allow null result
 
   if (generationError) {
-    console.error('Error fetching latest generation:', generationError);
+    console.error("Error fetching latest generation:", generationError);
     // Non-critical error, we can continue without generation data
   }
 
@@ -76,4 +76,3 @@ export async function getSetById(
 
   return setDetail;
 }
-

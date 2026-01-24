@@ -1,10 +1,10 @@
-import type { WordVM } from "../../../types"
+import type { WordVM } from "../../../types";
 
-type WordRowProps = {
-  word: WordVM
-  onEdit: (word: WordVM) => void
-  onDelete: (wordId: string) => void
-  disabled?: boolean
+interface WordRowProps {
+  word: WordVM;
+  onEdit: (word: WordVM) => void;
+  onDelete: (wordId: string) => void;
+  disabled?: boolean;
 }
 
 /**
@@ -40,6 +40,5 @@ export function WordRow({ word, onEdit, onDelete, disabled }: WordRowProps) {
         </button>
       </div>
     </div>
-  )
+  );
 }
-

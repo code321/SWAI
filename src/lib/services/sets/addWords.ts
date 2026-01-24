@@ -1,16 +1,16 @@
-import type { SupabaseClient } from '../../../db/supabase.client';
-import type { WordsAddCommand, WordsAddResponseDTO, WordDTO } from '../../../types';
+import type { SupabaseClient } from "../../../db/supabase.client";
+import type { WordsAddCommand, WordsAddResponseDTO, WordDTO } from "../../../types";
 
 /**
  * Service function to add 1-5 words to an existing set.
- * 
+ *
  * Implements:
  * - Set existence and ownership verification
  * - Duplicate English word detection (en_norm constraint)
  * - Bulk word insertion
  * - Automatic words_count update
  * - Transaction handling for atomicity
- * 
+ *
  * @param supabase - Authenticated Supabase client
  * @param userId - Current user ID from auth token
  * @param setId - UUID of the set to add words to
@@ -28,15 +28,15 @@ export async function addWords(
 
   // Step 1: Verify set exists and belongs to user
   const { data: setData, error: setError } = await supabase
-    .from('sets')
-    .select('id, words_count')
-    .eq('id', setId)
-    .eq('user_id', userId)
+    .from("sets")
+    .select("id, words_count")
+    .eq("id", setId)
+    .eq("user_id", userId)
     .single();
 
   if (setError || !setData) {
-    const error = new Error('Set not found');
-    (error as any).code = 'SET_NOT_FOUND';
+    const error = new Error("Set not found");
+    (error as any).code = "SET_NOT_FOUND";
     throw error;
   }
 
@@ -50,25 +50,25 @@ export async function addWords(
 
   // Step 3: Insert words (bulk insert)
   const { data: insertedWords, error: insertError } = await supabase
-    .from('words')
+    .from("words")
     .insert(wordsToInsert)
-    .select('id, pl, en');
+    .select("id, pl, en");
 
   if (insertError) {
     // Check for duplicate en_norm constraint violation
-    if (insertError.code === '23505' && insertError.message.includes('words_user_id_set_id_en_norm_key')) {
-      const error = new Error('One or more English words already exist in this set');
-      (error as any).code = 'WORD_DUPLICATE';
+    if (insertError.code === "23505" && insertError.message.includes("words_user_id_set_id_en_norm_key")) {
+      const error = new Error("One or more English words already exist in this set");
+      (error as any).code = "WORD_DUPLICATE";
       throw error;
     }
 
-    console.error('Error inserting words:', insertError);
-    throw new Error('Failed to insert words');
+    console.error("Error inserting words:", insertError);
+    throw new Error("Failed to insert words");
   }
 
   if (!insertedWords || insertedWords.length === 0) {
-    const error = new Error('No words were inserted');
-    (error as any).code = 'INSERT_FAILED';
+    const error = new Error("No words were inserted");
+    (error as any).code = "INSERT_FAILED";
     throw error;
   }
 
@@ -76,25 +76,22 @@ export async function addWords(
   const newWordsCount = setData.words_count + insertedCount;
 
   // Step 4: Update words_count on the set
-  const { error: updateError } = await supabase
-    .from('sets')
-    .update({ words_count: newWordsCount })
-    .eq('id', setId);
+  const { error: updateError } = await supabase.from("sets").update({ words_count: newWordsCount }).eq("id", setId);
 
   if (updateError) {
-    console.error('Error updating words_count:', updateError);
+    console.error("Error updating words_count:", updateError);
     // Non-critical error - continue with response
   }
 
   // Step 5: Optional - Log event to event_log
   try {
-    await supabase.from('event_log').insert({
+    await supabase.from("event_log").insert({
       user_id: userId,
-      event_type: 'words_added',
+      event_type: "words_added",
       entity_id: setId,
     });
   } catch (logError) {
-    console.error('Error logging event:', logError);
+    console.error("Error logging event:", logError);
     // Ignore logging errors
   }
 
@@ -110,4 +107,3 @@ export async function addWords(
     words_count: newWordsCount,
   };
 }
-
