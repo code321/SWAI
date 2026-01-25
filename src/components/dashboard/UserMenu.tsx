@@ -15,13 +15,20 @@ export function UserMenu({ userEmail }: UserMenuProps) {
 
   const handleLogout = async () => {
     try {
-      // TODO: Implement actual logout when auth is ready
-      // await fetch('/auth/v1/logout', { method: 'POST' });
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
 
-      // For now, just redirect to home
-      window.location.href = "/";
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      // Redirect to login page after successful logout
+      window.location.href = "/auth/login";
     } catch (error) {
       console.error("Logout failed:", error);
+      // Even if logout fails, redirect to login (clear client state)
+      window.location.href = "/auth/login";
     }
   };
 
@@ -69,7 +76,6 @@ export function UserMenu({ userEmail }: UserMenuProps) {
             {/* User info section */}
             <div className="px-4 py-3 border-b border-gray-100">
               <p className="text-sm font-medium text-gray-900 truncate">{displayEmail}</p>
-              {!userEmail && <p className="text-xs text-gray-500 mt-1">(Tryb gościa - auth wkrótce)</p>}
             </div>
 
             {/* Menu items */}

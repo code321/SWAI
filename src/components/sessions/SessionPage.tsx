@@ -183,7 +183,9 @@ export function SessionPage({ sessionId }: SessionPageProps) {
               }`}
             >
               <p className="text-sm font-medium">
-                {currentSentence.latest_attempt.is_correct ? "✓ Poprawna odpowiedź!" : "Próba #{currentSentence.latest_attempt.attempt_no}"}
+                {currentSentence.latest_attempt.is_correct
+                  ? "✓ Poprawna odpowiedź!"
+                  : "Próba #{currentSentence.latest_attempt.attempt_no}"}
               </p>
             </div>
           )}

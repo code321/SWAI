@@ -1,0 +1,14 @@
+---
+import PublicLayout from "../../layouts/PublicLayout.astro";
+import { LoginForm } from "../../components/auth/LoginForm";
+
+// This page requires SSR to handle cookies and redirects
+export const prerender = false;
+
+// Get the 'next' parameter from URL for redirect after login
+const nextUrl = Astro.url.searchParams.get("next") || "/app/dashboard";
+---
+
+<PublicLayout title="Zaloguj się - SmartWordsAI">
+  <LoginForm nextUrl={nextUrl} client:load />
+</PublicLayout>
