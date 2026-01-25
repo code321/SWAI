@@ -1,8 +1,23 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
----
+/**
+ * Landing page (/)
+ *
+ * Redirects based on authentication status:
+ * - Authenticated users → /app/dashboard
+ * - Unauthenticated users → /auth/login
+ */
 
-<Layout>
-  <Welcome />
-</Layout>
+// Enable SSR for auth check
+export const prerender = false;
+
+// Check if user is authenticated via middleware
+const user = Astro.locals.user;
+
+if (user) {
+  // User is logged in, redirect to dashboard
+  return Astro.redirect("/app/dashboard");
+} else {
+  // User is not logged in, redirect to login
+  return Astro.redirect("/auth/login");
+}
+---

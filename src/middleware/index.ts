@@ -5,11 +5,9 @@ import { createSupabaseServerInstance } from "../lib/auth/supabase.auth.ts";
 
 /**
  * Public paths that don't require authentication
- * Includes auth pages, auth API endpoints, and landing page
+ * Includes auth pages and auth API endpoints
  */
 const PUBLIC_PATHS = [
-  // Landing page
-  "/",
   // Auth pages
   "/auth/login",
   "/auth/register",
@@ -73,6 +71,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // User is NOT authenticated
+  // Allow landing page (/) to handle its own redirect logic
+  if (url.pathname === "/") {
+    return next();
+  }
+
   // Redirect to login for protected routes (/app/*)
   if (url.pathname.startsWith("/app/")) {
     return redirect(`/auth/login?next=${encodeURIComponent(url.pathname)}`);
