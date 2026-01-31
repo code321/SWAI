@@ -1,9 +1,7 @@
 {
   "recommendations": [
-    "astro-build.astro-vscode",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "christian-kohler.path-intellisense"
-  ],
-  "unwantedRecommendations": []
+    "vitest.explorer",
+    "ms-playwright.playwright",
+    "streetsidesoftware.code-spell-checker"
+  ]
 }

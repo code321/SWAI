@@ -41,6 +41,10 @@ Key dependencies: `astro`, `@astrojs/react`, `@astrojs/node`, `@astrojs/sitemap`
 
 Dev tooling: ESLint 9 (with Astro/React/TS rules), Prettier + `prettier-plugin-astro`, Husky, lint-staged.
 
+Testing:
+- Unit & Integration Tests: Vitest (with vi.mock() for Supabase/OpenRouter, ≥80% coverage target)
+- E2E Tests: Playwright (cross-browser: Chromium, Firefox, WebKit)
+
 ## Getting started locally
 
 - Prerequisites:
