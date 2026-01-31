@@ -43,8 +43,23 @@ export const GET: APIRoute = async (context) => {
       );
     }
 
-    // TODO: Get user ID from authentication middleware when implemented
-    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
+    // Get user ID from authentication middleware
+    const userId = context.locals.user?.id;
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Authentication required.",
+          },
+        } satisfies ApiErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+        }
+      );
+    }
 
     // Validate setId parameter
     let setId: string;
@@ -156,8 +171,23 @@ export const PATCH: APIRoute = async (context) => {
       );
     }
 
-    // TODO: Get user ID from authentication middleware when implemented
-    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
+    // Get user ID from authentication middleware
+    const userId = context.locals.user?.id;
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Authentication required.",
+          },
+        } satisfies ApiErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+        }
+      );
+    }
 
     // Validate setId parameter
     let setId: string;
@@ -407,8 +437,23 @@ export const DELETE: APIRoute = async (context) => {
       );
     }
 
-    // TODO: Get user ID from authentication middleware when implemented
-    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
+    // Get user ID from authentication middleware
+    const userId = context.locals.user?.id;
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Authentication required.",
+          },
+        } satisfies ApiErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+        }
+      );
+    }
 
     // Validate setId parameter
     let setId: string;

@@ -5,12 +5,11 @@ import { GenerationCounter } from '../../components/dashboard/GenerationCounter'
 import { UserMenu } from '../../components/dashboard/UserMenu';
 import type { DashboardDTO, UsageDailyDTO } from '../../types';
 
-// TODO: Enable authentication when auth system is implemented
-// This page will require authentication in production
+// This page requires authentication - middleware handles redirect
 export const prerender = false;
 
-// Get access token from cookie (optional for now)
-const accessToken = Astro.cookies.get('sb-access-token')?.value;
+// Get user from middleware (populated during auth verification)
+const user = Astro.locals.user;
 
 // Fetch dashboard data server-side
 let dashboard: DashboardDTO | null = null;
@@ -20,32 +19,28 @@ let error: string | null = null;
 try {
   const baseUrl = Astro.url.origin;
   
-  // Prepare headers with optional auth token
+  // Forward original cookies to internal API calls
+  const cookieHeader = Astro.request.headers.get('Cookie');
   const headers: Record<string, string> = {};
-  if (accessToken) {
-    headers['Cookie'] = `sb-access-token=${accessToken}`;
+  if (cookieHeader) {
+    headers['Cookie'] = cookieHeader;
   }
 
-  // Fetch usage data
-  const usageResponse = await fetch(`${baseUrl}/api/usage/daily`, {
-    headers,
-  });
+  // Fetch usage data and dashboard data in parallel
+  const [usageResponse, dashboardResponse] = await Promise.all([
+    fetch(`${baseUrl}/api/usage/daily`, { headers }),
+    fetch(`${baseUrl}/api/dashboard?include_events=true`, { headers }),
+  ]);
 
   if (!usageResponse.ok) {
     throw new Error('Failed to fetch usage data');
   }
 
-  usage = await usageResponse.json();
-
-  // Fetch dashboard data with events
-  const dashboardResponse = await fetch(`${baseUrl}/api/dashboard?include_events=true`, {
-    headers,
-  });
-
   if (!dashboardResponse.ok) {
     throw new Error('Failed to fetch dashboard data');
   }
 
+  usage = await usageResponse.json();
   dashboard = await dashboardResponse.json();
 } catch (err) {
   console.error('Error loading dashboard:', err);
@@ -74,7 +69,7 @@ try {
           <div class="text-xl font-bold text-blue-600">
             SmartWordsAI
           </div>
-          <UserMenu userEmail={null} client:load />
+          <UserMenu userEmail={user?.email ?? null} client:load />
         </div>
 
         <!-- Dashboard Header -->

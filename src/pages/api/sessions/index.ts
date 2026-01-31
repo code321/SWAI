@@ -31,7 +31,6 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     console.log("POST /api/sessions called");
-    console.log("context", context);
     // Get Supabase client from middleware
     const supabase = context.locals.supabase;
 
@@ -50,9 +49,23 @@ export const POST: APIRoute = async (context) => {
       );
     }
 
-    // TODO: Get user ID from authentication middleware when implemented
-    // For now, using a placeholder - this will be replaced with actual auth
-    const userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // Placeholder
+    // Get user ID from authentication middleware
+    const userId = context.locals.user?.id;
+
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Authentication required.",
+          },
+        } satisfies ApiErrorDTO),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+        }
+      );
+    }
 
     // Parse request body
     let body;

@@ -11,26 +11,22 @@ import { getDashboard } from "../../lib/services/dashboard/getDashboard";
  * Response: DashboardDTO
  * Status: 200 OK | 401 Unauthorized | 500 Internal Server Error
  */
-export const GET: APIRoute = async ({ locals, cookies, url }) => {
+//export const GET: APIRoute = async ({ locals }) => {
   const supabase = locals.supabase;
 
-  // Get access token from cookie (optional for now - TODO: make required when auth is implemented)
-  const accessToken = cookies.get("sb-access-token")?.value;
+  // Get user ID from middleware (populated during auth verification)
+  const userId = locals.user?.id;
 
-  // TODO: Get user ID from authentication middleware when implemented
-  // For now, using a placeholder - this will be replaced with actual auth
-  let userId = "bec776c2-538f-4375-a91e-03aba1adfbfa"; // This will come from auth middleware later
-
-  // Try to get authenticated user if token exists
-  if (accessToken) {
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(accessToken);
-
-    if (!authError && user) {
-      userId = user.id;
-    }
+  if (!userId) {
+    return new Response(
+      JSON.stringify({
+        error: {
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        },
+      }),
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   try {

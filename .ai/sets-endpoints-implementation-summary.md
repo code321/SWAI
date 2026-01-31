@@ -295,7 +295,7 @@ All endpoints follow consistent error response format (`ApiErrorDTO`):
 ## 📝 Notes
 
 - All endpoints use `export const prerender = false` for SSR
-- Placeholder userId: `'bec776c2-538f-4375-a91e-03aba1adfbfa'`
+- User authentication via middleware: `context.locals.user?.id` (returns 401 if not authenticated)
 - Event logging is non-blocking (failures don't affect main operation)
 - English word normalization handled by Postgres function `normalize_en()`
 - All handlers follow Astro APIRoute conventions
