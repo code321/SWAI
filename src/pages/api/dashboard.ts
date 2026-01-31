@@ -11,7 +11,7 @@ import { getDashboard } from "../../lib/services/dashboard/getDashboard";
  * Response: DashboardDTO
  * Status: 200 OK | 401 Unauthorized | 500 Internal Server Error
  */
-//export const GET: APIRoute = async ({ locals }) => {
+export const GET: APIRoute = async ({ locals }) => {
   const supabase = locals.supabase;
 
   // Get user ID from middleware (populated during auth verification)
